@@ -70,6 +70,13 @@ app.get('/~',(req,res)=>{
     res.redirect('/login');
   }
 });
+app.get('/new',(req,res)=>{
+  if(req.session.signedIn){
+  res.render('new',getLocals(req));
+  }else{
+    res.redirect('/login');
+  }
+})
 
 // app.post();
 app.post('/signup',(req,res)=>{
@@ -106,7 +113,6 @@ app.post('/login',(req,res)=>{
       }
     })
 })
-
 
 // app.listen();
 http.listen(3000, () => {
