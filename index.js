@@ -92,7 +92,7 @@ app.post('/signup',(req,res)=>{
     
     if(d){
     
-      res.redirect('/login?exist=true');
+      res.redirect('/signup?exist=true');
     }else{
       users.set(username,{'username':username,'password':password,'email':email},()=>{
         req.session.signedIn=username;
