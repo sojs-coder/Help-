@@ -1,17 +1,17 @@
 {
-  "name": "Help",
+  "name": "help",
   "version": "1.0.0",
-  "description": "",
+  "description": "## What is help? When you want to create a big project, and want people to help you with it, you simply hit [new](https://help.sojs.repl.co/new), fill out the required things, and people who want to help will reach out. No need to annoy people with asking them.",
   "main": "index.js",
   "start": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "SoJS",
   "license": "ISC",
   "dependencies": {
-    "@sojs_coder/db": "^1.5.6",
+    "@sojs_coder/db": "^1.5.7",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "crypto-js": "^4.0.0",
@@ -20,5 +20,14 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "swig": "^1.4.2"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sojs-coder/Help-.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sojs-coder/Help-/issues"
+  },
+  "homepage": "https://github.com/sojs-coder/Help-#readme"
 }

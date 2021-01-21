@@ -142,7 +142,7 @@ app.post('/new',(req,res)=>{
       }else{
         pleas.get('pleaID',(d)=>{
           var pleaID = d;
-          pleas.set(name,{des:des,maxout:9999999999,username:req.session.userData.username,pleaID:pleaID},()=>{});
+          pleas.set(name,{'des':des,'maxout':9999999999,'username':req.session.userData.username,'pleaID':pleaID},()=>{});
           d++;
           pleas.set('pleaID',d,()=>{});
           
