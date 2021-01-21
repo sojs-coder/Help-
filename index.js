@@ -79,7 +79,7 @@ app.get('/new',(req,res)=>{
   }
 })
 app.get('/logout',(req,res)=>{
-  req.session = undefined;
+  req.session.signedIn = undefined;
   res.redirect('/login');
 })
 
