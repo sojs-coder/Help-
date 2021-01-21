@@ -78,6 +78,10 @@ app.get('/new',(req,res)=>{
     res.redirect('/login');
   }
 })
+app.get('/logout',(req,res)=>{
+  req.session = undefined;
+  res.redirect('/login');
+})
 
 // app.post();
 app.post('/signup',(req,res)=>{
