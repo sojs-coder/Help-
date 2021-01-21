@@ -91,6 +91,29 @@
               <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name = "des"></textarea>
             </div>
           </div>
+          <div class="mb-3">
+              <label for="exampleFormControlTextarea1" class="form-label">Max Assistances (For small projects)</label>
+              <div class="input-group">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name= "maxout">
+                  <script>
+                    document.getElementById('flexCheckDefault').onclick((d)=>{
+                      var check =document.getElementById('flexCheckDefault');
+                      if(check.value = "true"){
+                        check.value = "false";
+                      }else{
+                        check.value = "true";
+                      }
+                    });
+                  </script>
+                  <label class="form-check-label" for="flexCheckDefault">
+                   Max out at:
+                  </label>
+              </div>
+              <input style = "margin-left: 5px;margin-top: -2px;" type="number" value="10" min="1" max="20" step="1" name = "assistances"/>
+              </div>
+            </div>
+          </div>
           <hr class="my-4">
 
           <button class="w-100 btn btn-primary btn-lg" type="submit">Create</button>

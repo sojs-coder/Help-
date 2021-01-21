@@ -36,6 +36,7 @@ app.use(morgan('dev'))
 app.use(ex.static('views'));
 app.set('view cache', false);
 const users = new dbo.DB('users');
+const pleas = new dbo.DB('pleas');
 
 //app.get();
 
@@ -112,7 +113,44 @@ app.post('/login',(req,res)=>{
         res.redirect('/login?doesnotmatch=true');
       }
     })
-})
+});
+app.post('/new',(req,res)=>{
+  var name = req.body.name;
+  var des = req.body.des;
+  var maxout = req.body.maxout;
+  if(maxout){
+    var assistances = req.body.assistances;
+    pleas.get(name, (d)=>{
+      if(d){
+        res.redirect('/new?exists=true');
+      }else{
+        pleas.get('pleaID',(d)=>{
+          var pleaID = d;
+          pleas.set(name,{des:des,maxout:assistances,username:req.session.userData.username,pleaID:pleaID},()=>{});
+          d++;
+          pleas.set('pleaID',d,()=>{});
+        })
+      }
+    })
+  }else{
+    pleas.get(name, (d)=>{
+      if(d){
+        res.redirect('/new?exists=true');
+      }else{
+        pleas.get('pleaID',(d)=>{
+          var pleaID = d;
+          pleas.set(name,{des:des,maxout:9999999999,username:req.session.userData.username,pleaID:pleaID},()=>{});
+          d++;
+          pleas.set('pleaID',d,()=>{});
+          
+        })
+      }
+    })
+  }
+  
+
+  res.redirect('/~')
+});
 
 // app.listen();
 http.listen(3000, () => {
