@@ -10,8 +10,24 @@ const cookieParser = require('cookie-parser');
 const crypto = require('crypto-js');
 const dbo = require('@sojs_coder/db')
 const http = require('http').createServer(app);
+var admin = require("firebase-admin");
+
+// Fetch the service account key JSON file contents
+var serviceAccount = require("./help-ab9d8-firebase-adminsdk-jslib-f8778ca049.json");
+
+// Initialize the app with a service account, granting admin privileges
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://help-ab9d8-default-rtdb.firebaseio.com/"
+});
+
+// As an admin, the app has access to read and write all data, regardless of Security Rules
 
 
+// ref.on("child_added", function(snapshot) {
+//   var plea = snapshot.val();
+  
+// });
 //Helpers
 
 function getLocals(req){
@@ -36,7 +52,8 @@ app.use(morgan('dev'))
 app.use(ex.static('views'));
 app.set('view cache', false);
 const users = new dbo.DB('users');
-const pleas = new dbo.DB('pleas');
+var db = admin.database();
+var ref = db.ref("pleas");
 
 //app.get();
 
@@ -73,7 +90,7 @@ app.get('/~',(req,res)=>{
 });
 app.get('/new',(req,res)=>{
   if(req.session.signedIn){
-  res.render('new',getLocals(req));
+    res.render('new',getLocals(req));
   }else{
     res.redirect('/login');
   }
@@ -81,6 +98,16 @@ app.get('/new',(req,res)=>{
 app.get('/logout',(req,res)=>{
   req.session.signedIn = undefined;
   res.redirect('/login');
+})
+app.get('/plea/:pleaID',(req,res)=>{
+  var pleaID = req.params['pleaID'];
+  ref.on('value',(snapshot)=>{
+    var snapshot = snapshot.val();
+    console.log(snapshot)
+    var plea = snapshot[pleaID];
+    console.log(plea)
+    res.render('plea',{"author": plea.author, "title": plea.title, "des": plea.des,"id":pleaID,"users":plea.users, username: (req.session.signedIn)?req.session.userData.username : undefined});
+  })
 })
 
 // app.post();
@@ -118,43 +145,19 @@ app.post('/login',(req,res)=>{
     })
 });
 app.post('/new',(req,res)=>{
-  var name = req.body.name;
-  var des = req.body.des;
-  var maxout = req.body.maxout;
-  if(maxout){
-    var assistances = req.body.assistances;
-    pleas.get(name, (d)=>{
-      if(d){
-        res.redirect('/new?exists=true');
-      }else{
-        pleas.get('pleaID',(d)=>{
-          var pleaID = d;
-          pleas.set(name,{des:des,maxout:assistances,username:req.session.userData.username,pleaID:pleaID},()=>{});
-          d++;
-          pleas.set('pleaID',d,()=>{});
-        })
-      }
-    })
+  if(req.session.signedIn){
+    var title = req.body.title;
+    var des = req.body.des;
+    var author = req.session.userData.username;
+    var pleaRef = ref.push({
+      title:title,des:des,author:author,users:[author],username: req.session.userData.username
+    });
+    res.redirect('/plea/'+pleaRef.key);
   }else{
-    pleas.get(name, (d)=>{
-      if(d){
-        res.redirect('/new?exists=true');
-      }else{
-        pleas.get('pleaID',(d)=>{
-          var pleaID = d;
-          pleas.set(name,{'des':des,'maxout':9999999999,'username':req.session.userData.username,'pleaID':pleaID},()=>{});
-          d++;
-          pleas.set('pleaID',d,()=>{});
-          
-        })
-      }
-    })
+    res.redirect('/login')
   }
   
-
-  res.redirect('/~')
-});
-
+})
 // app.listen();
 http.listen(3000, () => {
   console.log('listening on port:3000');
