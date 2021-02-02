@@ -11,9 +11,13 @@ const crypto = require('crypto-js');
 const dbo = require('@sojs_coder/db')
 const http = require('http').createServer(app);
 var admin = require("firebase-admin");
-
+const crypto2 = require('./crypto.js')
+const decrypt = crypto2.decrypt;
+const encrypt = crypto2.encrypt;
 // Fetch the service account key JSON file contents
-var serviceAccount = require("./help-ab9d8-firebase-adminsdk-jslib-f8778ca049.json");
+var serviceAccount = require('./serviceKey.json');
+serviceAccount = decrypt(serviceAccount)
+serviceAccount = JSON.parse(serviceAccount);
 
 // Initialize the app with a service account, granting admin privileges
 admin.initializeApp({
@@ -21,13 +25,7 @@ admin.initializeApp({
   databaseURL: "https://help-ab9d8-default-rtdb.firebaseio.com/"
 });
 
-// As an admin, the app has access to read and write all data, regardless of Security Rules
 
-
-// ref.on("child_added", function(snapshot) {
-//   var plea = snapshot.val();
-  
-// });
 //Helpers
 
 function getLocals(req){
@@ -60,6 +58,8 @@ var ref = db.ref("pleas");
 app.get('/',(req,res)=>{
   res.redirect('/home');
 });
+
+
 app.get('/home',(req,res)=>{
   if(!req.session.signedIn){
     res.render('home',getLocals(req));
