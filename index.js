@@ -103,11 +103,28 @@ app.get('/plea/:pleaID',(req,res)=>{
   var pleaID = req.params['pleaID'];
   ref.on('value',(snapshot)=>{
     var snapshot = snapshot.val();
-    console.log(snapshot)
     var plea = snapshot[pleaID];
-    console.log(plea)
     res.render('plea',{"author": plea.author, "title": plea.title, "des": plea.des,"id":pleaID,"users":plea.users, username: (req.session.signedIn)?req.session.userData.username : undefined});
   })
+})
+app.get('/join/:pleaID',(req,res)=>{
+  if(req.session.signedIn){
+    var pleaID = req.params['pleaID'];
+    ref.once('value',(snapshot)=>{
+      var snap = snapshot.val();
+      var plea = snap[pleaID];
+      plea.users.push(req.session.userData.username);
+      var pleaRef = ref.child(pleaID);
+      pleaRef.update(plea);
+      res.redirect('/joined/'+pleaID);
+      
+    })
+  }else{
+    res.redirect('/login');
+  }
+});
+app.get('/joined/:pleaID',(req,res)=>{
+  ref.once
 })
 
 // app.post();
@@ -122,9 +139,7 @@ app.post('/signup',(req,res)=>{
       res.redirect('/signup?exist=true');
     }else{
       users.set(username,{'username':username,'password':password,'email':email},()=>{
-        req.session.signedIn=username;
-        req.session.userData=d;
-        res.redirect('/~');
+        res.redirect('/login');
         
       })
     }
@@ -149,8 +164,9 @@ app.post('/new',(req,res)=>{
     var title = req.body.title;
     var des = req.body.des;
     var author = req.session.userData.username;
+    var link = req.body.link;
     var pleaRef = ref.push({
-      title:title,des:des,author:author,users:[author],username: req.session.userData.username
+      title:title,des:des,author:author,users:[author],username: req.session.userData.username,link:link
     });
     res.redirect('/plea/'+pleaRef.key);
   }else{

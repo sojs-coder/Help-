@@ -2,25 +2,24 @@
 <html lang="en">
 
 <head>
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+ <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
 
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
 
 <script>
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   var firebaseConfig = {
-    apiKey: "AIzaSyC_miM2Wip6iNnPtsAezZisu_iOWwSk30I",
-    authDomain: "help-ab9d8.firebaseapp.com",
-    databaseURL: "https://help-ab9d8-default-rtdb.firebaseio.com",
-    projectId: "help-ab9d8",
-    storageBucket: "help-ab9d8.appspot.com",
-    messagingSenderId: "927805818418",
-    appId: "1:927805818418:web:c1907f4f036fb493605e2b",
-    measurementId: "G-NTRBCN0YVK"
+    apiKey: "AIzaSyCqqICGwZx5cheh2FRN2_emWDFmx1RzRE8",
+    authDomain: "help-38d77.firebaseapp.com",
+    projectId: "help-38d77",
+    storageBucket: "help-38d77.appspot.com",
+    messagingSenderId: "89380496627",
+    appId: "1:89380496627:web:770b5af07afa24535fc386",
+    measurementId: "G-50JHBCK55T"
   };
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
@@ -29,18 +28,17 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
-	<meta name="author" content="SoJS and Bootstrap">
+	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
 	<meta name="generator" content="Hugo 0.79.0">
-	<title>New Plea - Help!</title>
-
+	<link rel="stylesheet" href="./css/home.css" />
+	<link rel="stylesheet" href="./css/cards.css">
+	<title>Help!</title>
 
 
 
 
 	<!-- Bootstrap core CSS -->
 	<link href="./css/bootstrap.min.css" rel="stylesheet">
-	<meta name="theme-color" content="#7952b3">
-
 
 	<style>
 		.bd-placeholder-img {
@@ -57,33 +55,33 @@
 			}
 		}
 	</style>
-
-
-	<!-- Custom styles for this template -->
-	<link href="./css/home.css" rel="stylesheet">
 </head>
 
-<body class="bg-light">
+<body>
+
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 			<div class="container-fluid">
-				<a class="navbar-brand" href="/">Help!</a>
+				<a class="navbar-brand" href="#">Help!</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link" href="/home">Home</a>
+            <a class="nav-link" href="/~">Home</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/pleas" aria-current="page" >Posts</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" 
-            aria-current="page" href="/signup">Sign Up</a>
+            <a class="nav-link" href="/logout" aria-disabled="true">Logout</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/pleas" >Posts</a>
+          <li class = "nav-item">
+            <span class = "nav-link active">Logged in as: {{ username }}
           </li>
         </ul>
+
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
@@ -92,6 +90,7 @@
     </div>
   </nav>
 </header>
+
 <div class="container">
   <main>
     <div class="py-5 text-center">
@@ -103,9 +102,15 @@
       <div class="col-md-7 col-lg-8">
         <form class="needs-validation" novalidate action = "/new" method = "POST">
           <div class="row g-3">
+            <div class = "col-md-7">
             <div class="mb-3">
               <label for="exampleFormControlInput1" class="form-label">Name</label>
               <input class="form-control" id="exampleFormControlInput1" name = "title">
+            </div>
+            <div class="mb-3">
+              <label for="exampleFormControlInput1" class="form-label">Repl Link <a href = "https://github.com/sojs-coder/Help-/wiki/Linking-A-Repl" style = "text-decoration: none">?</a></label>
+              <input class="form-control" id="exampleFormControlInput1" name = "link">
+            </div>
             </div>
             <div class="mb-3">
               <label for="exampleFormControlTextarea1" class="form-label">Description</label>
