@@ -89,7 +89,15 @@
       <h1>{{ title }}</h1>
       <span class = "text-muted">@{{ author }}
       <p>{{ des }}</p>
-      <a class = "btn btn-primary" href="/join/{{ id }}">Join!</a>
+        {% if joined %}
+          
+            <a  class = "btn" replhref="#" style="background-color: lightgrey;cursor:not-allowed">Joined</a>
+        {% else %}
+          <form action = "/join/{{ id }}" method = "POST">
+            <input type="submit" class = "btn btn-primary" value="Join!">
+          </form>
+        {% endif %}        
+      
     <div>
       <h3>People Joined:</h3>
       <ul>

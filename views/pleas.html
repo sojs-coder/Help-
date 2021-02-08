@@ -25,22 +25,14 @@
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
 </script>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="">
-	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-	<meta name="generator" content="Hugo 0.79.0">
-	<link rel="stylesheet" href="./css/home.css" />
-	<link rel="stylesheet" href="./css/cards.css">
-	<title>Help!</title>
-
-
-
-
-	<!-- Bootstrap core CSS -->
-	<link href="./css/bootstrap.min.css" rel="stylesheet">
-
-	<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="../js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href = "../css/home.css">
+  <title>Pleas - Help!</title>
+  
+<style>
 		.bd-placeholder-img {
 			font-size: 1.125rem;
 			text-anchor: middle;
@@ -56,10 +48,8 @@
 		}
 	</style>
 </head>
-
 <body>
-
-	<header>
+  <header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="#">Help!</a>
@@ -69,17 +59,23 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/~">Home</a>
+            <a  href="/" class ="nav-link">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/pleas">Posts</a>
+            <a href="/pleas" class="nav-link active" aria-current="page">Posts</a>
           </li>
+          {% if username %}
           <li class="nav-item">
-            <a class="nav-link" href="/logout" aria-disabled="true">Logout</a>
+            <a class="nav-link" href="/logout">Logout</a>
           </li>
           <li class = "nav-item">
             <span class = "nav-link active">Logged in as: {{ username }}
           </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="/login" >Login</a>
+          </li>
+          {% endif  %}
         </ul>
 
         <form class="d-flex">
@@ -93,45 +89,23 @@
 
 <main style = "margin: 20px;">
 
+  <h1><a class = "btn btn-primary" style = "float:right; "href="/new">+ New</a></h1>
   
-  <a class = "btn btn-primary" style = "float:right;" href="/new">+ New</a>
-  <h1>Notifications</h1>
+  <h1>Pleas:</h1>
   <div class = "container-fluid">
-  <div class = "row">
   <!-- Cards -->
-  <div class="card col-sm">
-  <div class="card-body">
-    <h5 class="card-title">SoJS</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Help!</h6>
-    <p class="card-text">SoJS accepted you help on <i>Help!</i></p>
-    <a href="{{ plea.replLink }}" class="btn btn-primary">Go to repl</a>
-    </div>
+  {% for plea in pleas %}
+    <div class="card-body">
+      <h5 class="card-title">@{{ plea.author }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{ plea.title }}</h6>
+      <p class="card-text">{{ plea.shortDes }}</p>
+      <a href="/plea/{{ plea.key }}" class="btn btn-primary">View</a>
+      </div>
+      <hr>
+  {% endfor %}
   </div>
-  <div class="card col-sm">
-  <div class="card-body">
-    <h5 class="card-title">SoJS</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Help!</h6>
-    <p class="card-text">SoJS accepted you help on <i>Help!</i></p>
-    <a href="{{ plea.replLink }}" class="btn btn-primary">Go to repl</a>
-    </div>
-  </div>
-  <div class="card col-sm">
-  <div class="card-body">
-    <h5 class="card-title">SoJS</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Help!</h6>
-    <p class="card-text">SoJS accepted you help on <i>Help!</i></p>
-    <a href="{{ plea.replLink }}" class="btn btn-primary">Go to repl</a>
-    </div>
-  </div>
-  
-  <!-- Note: three cards. Currently using just three to show example layout. End cards here -->
-   <a href= "/notifications" style = "margin-top: 6px;" class = "btn btn-primary">View All</a>
-  </div>
- 
-  </div>
-    
-
   <footer class="container">
+    <p class="float-end"><a href="#">Back to top</a></p>
     <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
   </footer>
 </main>

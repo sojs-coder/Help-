@@ -8,7 +8,6 @@ const upload = multer();
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto-js');
-const dbo = require('@sojs_coder/db')
 const http = require('http').createServer(app);
 var admin = require("firebase-admin");
 const crypto2 = require('./crypto.js')
@@ -22,7 +21,7 @@ serviceAccount = JSON.parse(serviceAccount);
 // Initialize the app with a service account, granting admin privileges
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://help-ab9d8-default-rtdb.firebaseio.com/"
+  databaseURL: "https://help-38d77-default-rtdb.firebaseio.com/"
 });
 
 
@@ -34,14 +33,31 @@ function getLocals(req){
     username: (req.session.userData) ? req.session.userData.username : false
   }
 }
-
+function truncate( str, n, useWordBoundary ){
+  if (str.length <= n) { return str; }
+  const subString = str.substr(0, n-1); // the original check
+  return (useWordBoundary 
+    ? subString.substr(0, subString.lastIndexOf(" ")) 
+    : subString) + "...";
+};
+function json2array(json){
+    var result = [];
+    var keys = Object.keys(json);
+    keys.forEach(function(key){
+        var x;
+        x = json[key];
+        x["key"] = key
+        result.push(json[key]);
+    });
+    return result;
+}
 // APP.USE();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array());
 app.use(cookieParser());
-app.use(session({ secret: "123456789-ABCDEF" }))
+app.use(session({ secret: process.env.SECRET }))
 app.use(morgan('dev'));
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
@@ -49,9 +65,9 @@ app.set('views', __dirname + '/views');
 app.use(morgan('dev'))
 app.use(ex.static('views'));
 app.set('view cache', false);
-const users = new dbo.DB('users');
 var db = admin.database();
 var ref = db.ref("pleas");
+var users = db.ref('users');
 
 //app.get();
 
@@ -97,6 +113,7 @@ app.get('/new',(req,res)=>{
 })
 app.get('/logout',(req,res)=>{
   req.session.signedIn = undefined;
+  req.session.userData = undefined;
   res.redirect('/login');
 })
 app.get('/plea/:pleaID',(req,res)=>{
@@ -104,43 +121,79 @@ app.get('/plea/:pleaID',(req,res)=>{
   ref.on('value',(snapshot)=>{
     var snapshot = snapshot.val();
     var plea = snapshot[pleaID];
-    res.render('plea',{"author": plea.author, "title": plea.title, "des": plea.des,"id":pleaID,"users":plea.users, username: (req.session.signedIn)?req.session.userData.username : undefined});
+    if(req.session.signedIn){
+      var alreadyJoined = (plea.users.indexOf(req.session.userData.username) !== -1) ? true : false;
+    }else{
+      var loggedIn = false;
+    }
+    res.render('plea',{
+        "author": plea.author,
+        "title": plea.title,
+        "des": plea.des,
+        "id":pleaID,
+        "users":plea.users,
+        "username": (req.session.signedIn)?req.session.userData.username : false,
+        "joined": alreadyJoined,
+        "loggedIn": loggedIn
+        });
   })
 })
-app.get('/join/:pleaID',(req,res)=>{
+app.get('/joined/:pleaID',(req,res)=>{
+  var id = req.params["pleaID"];
+  res.end('Thanks for joining plea with id of: '+id);
+});
+app.get('/pleas',(req,res)=>{
+  var pleas = [];
+
+  ref.once('value',(snapshot)=>{
+    pleas = json2array(snapshot.val());
+    var newPleas = pleas.map((element)=>{
+      var newElement= element;
+      newElement.shortDes = truncate(element.des,100, true);
+      return newElement
+    })
+    res.render('pleas',
+    {
+      notSignedIn: (req.session.signedIn) ? false : true,
+      username: (req.session.userData) ? req.session.userData.username : false,pleas: newPleas
+    }
+    );
+  })
+  
+})
+
+// app.post();
+app.post('/join/:pleaID',(req,res)=>{
   if(req.session.signedIn){
     var pleaID = req.params['pleaID'];
     ref.once('value',(snapshot)=>{
       var snap = snapshot.val();
       var plea = snap[pleaID];
-      plea.users.push(req.session.userData.username);
+      plea.users[plea.users.length]=req.session.userData.username;
       var pleaRef = ref.child(pleaID);
       pleaRef.update(plea);
+      var username = req.session.userData.username;
+     // notifcation(pleaID,req.session.username);
       res.redirect('/joined/'+pleaID);
       
     })
   }else{
-    res.redirect('/login');
+    res.redirect('/login?goto=joined/'+req.params['pleaID']);
   }
 });
-app.get('/joined/:pleaID',(req,res)=>{
-  ref.once
-})
-
-// app.post();
 app.post('/signup',(req,res)=>{
   var password = crypto.SHA256(req.body.password).toString(crypto.enc.Hex);
   var username = req.body.username;
   var email = req.body.email;
-  users.get(username,(d)=>{
-    
-    if(d){
-    
-      res.redirect('/signup?exist=true');
+  users.on('value',(snap)=>{
+    if(snap[username]){
+      res.redirect('/login?exists=true');
     }else{
-      users.set(username,{'username':username,'password':password,'email':email},()=>{
-        res.redirect('/login');
-        
+      users.child(username).set({
+        username: username,
+        email: email,
+        notifcations:[],
+        passwordHash: password
       })
     }
   })
@@ -148,8 +201,9 @@ app.post('/signup',(req,res)=>{
 app.post('/login',(req,res)=>{
   var username = req.body.username;
   var password = crypto.SHA256(req.body.password).toString(crypto.enc.Hex)
-  users.get(username,(d)=>{
-    
+  users.on("value",(d)=>{
+      d = d.val();
+      d = d[username];
       if(d){
         req.session.signedIn=username;
         req.session.userData=d;
