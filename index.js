@@ -10,7 +10,13 @@ const cookieParser = require('cookie-parser');
 const crypto = require('crypto-js');
 const http = require('http').createServer(app);
 var admin = require("firebase-admin");
-const crypto2 = require('./crypto.js')
+const crypto2 = require('./crypto.js');
+var Filter = require('bad-words');
+var filter = new Filter({ placeHolder: '*'});
+var showdown  = require('showdown'),
+    converter = new showdown.Converter();
+var xss = require('xss-filters').inHTMLData;
+
 const decrypt = crypto2.decrypt;
 const encrypt = crypto2.encrypt;
 // Fetch the service account key JSON file contents
@@ -30,7 +36,8 @@ admin.initializeApp({
 function getLocals(req){
   return {
     notSignedIn: (req.session.signedIn) ? false : true,
-    username: (req.session.userData) ? req.session.userData.username : false
+    username: (req.session.userData) ? req.session.userData.username : false,
+    notifcations: (req.session.signedIn) ? req.session.userData.notifcations : false
   }
 }
 function truncate( str, n, useWordBoundary ){
@@ -121,21 +128,25 @@ app.get('/plea/:pleaID',(req,res)=>{
   ref.on('value',(snapshot)=>{
     var snapshot = snapshot.val();
     var plea = snapshot[pleaID];
-    if(req.session.signedIn){
-      var alreadyJoined = (plea.users.indexOf(req.session.userData.username) !== -1) ? true : false;
+    if(plea){
+      if(req.session.signedIn){
+        var alreadyJoined = (plea.users.indexOf(req.session.userData.username) !== -1) ? true : false;
+      }else{
+        var loggedIn = false;
+      }
+      res.render('plea',{
+          "author": plea.author,
+          "title": plea.title,
+          "des": plea.des,
+          "id":pleaID,
+          "users":plea.users,
+          "username": (req.session.signedIn)?req.session.userData.username : false,
+          "joined": alreadyJoined,
+          "loggedIn": loggedIn
+      });
     }else{
-      var loggedIn = false;
+      res.redirect('/pleas');
     }
-    res.render('plea',{
-        "author": plea.author,
-        "title": plea.title,
-        "des": plea.des,
-        "id":pleaID,
-        "users":plea.users,
-        "username": (req.session.signedIn)?req.session.userData.username : false,
-        "joined": alreadyJoined,
-        "loggedIn": loggedIn
-        });
   })
 })
 app.get('/joined/:pleaID',(req,res)=>{
@@ -189,12 +200,16 @@ app.post('/signup',(req,res)=>{
     if(snap[username]){
       res.redirect('/login?exists=true');
     }else{
-      users.child(username).set({
+      var data = {
         username: username,
         email: email,
-        notifcations:[],
+        notifcations:[{title:"Welcome!",body:"Welcome to Help!",buttonLink:"/",buttonTitle:"Go Home"}],
         passwordHash: password
-      })
+      }
+      users.child(username).set(data);
+      req.session.userData = data;
+      req.session.signedIn = true;
+      res.redirect('/');
     }
   })
 });
@@ -219,6 +234,10 @@ app.post('/new',(req,res)=>{
     var des = req.body.des;
     var author = req.session.userData.username;
     var link = req.body.link;
+    title = filter.clean(title);
+    des = filter.clean(des);
+    des = xss(des);
+    des = converter.makeHtml(des);
     var pleaRef = ref.push({
       title:title,des:des,author:author,users:[author],username: req.session.userData.username,link:link
     });

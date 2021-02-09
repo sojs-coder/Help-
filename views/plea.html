@@ -28,6 +28,7 @@
   <link href="../css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="../js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href = "../css/home.css">
+<link rel="stylesheet" href="../css/plea.css"/>
   <title>{{ title }}</title>
   
 <style>
@@ -87,11 +88,11 @@
   <div class = "container">
     <div class="col-md-12">
       <h1>{{ title }}</h1>
-      <span class = "text-muted">@{{ author }}
-      <p>{{ des }}</p>
+      <h4 class = "text-muted">@{{ author }}</h4>
+      <p>{{ des|safe }}</p>
         {% if joined %}
           
-            <a  class = "btn" replhref="#" style="background-color: lightgrey;cursor:not-allowed">Joined</a>
+            <a  class = "btn" href="#" style="background-color: lightgrey;cursor:not-allowed">Joined</a>
         {% else %}
           <form action = "/join/{{ id }}" method = "POST">
             <input type="submit" class = "btn btn-primary" value="Join!">

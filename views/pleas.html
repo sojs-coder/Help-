@@ -96,8 +96,8 @@
   <!-- Cards -->
   {% for plea in pleas %}
     <div class="card-body">
-      <h5 class="card-title">@{{ plea.author }}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">{{ plea.title }}</h6>
+      <h5 class="card-title">{{ plea.title }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">@{{ plea.author }}</h6>
       <p class="card-text">{{ plea.shortDes }}</p>
       <a href="/plea/{{ plea.key }}" class="btn btn-primary">View</a>
       </div>
