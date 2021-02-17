@@ -48,7 +48,7 @@
 	</style>
 </head>
 <body>
-  <header>
+   <header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="#">Help!</a>
@@ -78,8 +78,7 @@
         </ul>
 
         <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+          <a class = "btn btn-primary" href="/new">+ New</a>
         </form>
       </div>
     </div>
@@ -90,6 +89,7 @@
       <h1>{{ title }}</h1>
       <h4 class = "text-muted">@{{ author }}</h4>
       <p>{{ des|safe }}</p>
+        {% if owner %}
         {% if joined %}
           
             <a  class = "btn" href="#" style="background-color: lightgrey;cursor:not-allowed">Joined</a>
@@ -97,7 +97,10 @@
           <form action = "/join/{{ id }}" method = "POST">
             <input type="submit" class = "btn btn-primary" value="Join!">
           </form>
-        {% endif %}        
+        {% endif %}    
+        {% else %}
+        <a href = "/edit/{{ id }}" class = "btn btn-primary">Edit</a>
+        {% endif %}    
       
     <div>
       <h3>People Joined:</h3>

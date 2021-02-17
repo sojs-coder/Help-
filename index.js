@@ -65,7 +65,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array());
 app.use(cookieParser());
 app.use(session({ secret: process.env.SECRET }))
-app.use(morgan('dev'));
 app.engine('html', swig.renderFile);
 app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
@@ -131,8 +130,10 @@ app.get('/plea/:pleaID',(req,res)=>{
     if(plea){
       if(req.session.signedIn){
         var alreadyJoined = (plea.users.indexOf(req.session.userData.username) !== -1) ? true : false;
+        var notowner = (plea.author == req.session.userData.username) ? false : true
       }else{
         var loggedIn = false;
+        var notowner = true;
       }
       res.render('plea',{
           "author": plea.author,
@@ -140,6 +141,8 @@ app.get('/plea/:pleaID',(req,res)=>{
           "des": plea.des,
           "id":pleaID,
           "users":plea.users,
+          "tags":plea.tags,
+          "owner":notowner,
           "username": (req.session.signedIn)?req.session.userData.username : false,
           "joined": alreadyJoined,
           "loggedIn": loggedIn
@@ -157,7 +160,9 @@ app.get('/pleas',(req,res)=>{
   var pleas = [];
 
   ref.once('value',(snapshot)=>{
+    if(snapshot.val()){
     pleas = json2array(snapshot.val());
+
     var newPleas = pleas.map((element)=>{
       var newElement= element;
       newElement.shortDes = truncate(element.des,100, true);
@@ -169,9 +174,25 @@ app.get('/pleas',(req,res)=>{
       username: (req.session.userData) ? req.session.userData.username : false,pleas: newPleas
     }
     );
+    }else{
+      res.render('pleas',
+    {
+      notSignedIn: (req.session.signedIn) ? false : true,
+      username: (req.session.userData) ? req.session.userData.username : false,pleas: []
+    }
+    );
+    }
   })
   
-})
+});
+app.get('/edit/:pleaID',(req,res)=>{
+  if(req.session.signedIn){
+    res.render('edit',{
+      username: req.session.userData.username,
+      
+    })
+  }
+});
 
 // app.post();
 app.post('/join/:pleaID',(req,res)=>{
@@ -207,9 +228,7 @@ app.post('/signup',(req,res)=>{
         passwordHash: password
       }
       users.child(username).set(data);
-      req.session.userData = data;
-      req.session.signedIn = true;
-      res.redirect('/');
+      res.redirect('/login');
     }
   })
 });
@@ -234,12 +253,14 @@ app.post('/new',(req,res)=>{
     var des = req.body.des;
     var author = req.session.userData.username;
     var link = req.body.link;
+    var tags = req.body.tags;
+    tags = tags.split(',');
     title = filter.clean(title);
     des = filter.clean(des);
     des = xss(des);
     des = converter.makeHtml(des);
     var pleaRef = ref.push({
-      title:title,des:des,author:author,users:[author],username: req.session.userData.username,link:link
+      title:title,des:des,author:author,users:[author],username: req.session.userData.username,link:link,tags:tags
     });
     res.redirect('/plea/'+pleaRef.key);
   }else{

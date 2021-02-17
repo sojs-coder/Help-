@@ -1,0 +1,20 @@
+.tags{
+  list-style: none;
+  margin: none;
+  padding:none;
+}
+.tag{
+  display: inline;
+  border: 1px solid rgb(13, 83, 189);
+  background-color: rgb(13, 83, 189);
+  border-radius: 6px;
+  color: #FFF;
+  padding: 5px;
+  font-size: 12px;
+}
+.tags a{
+  text-decoration: none;
+}
+.tag:hover{
+  background-color: rgb(10, 53, 119);
+}
