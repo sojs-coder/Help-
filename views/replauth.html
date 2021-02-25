@@ -2,15 +2,17 @@
 <html lang="en">
 
 <head>
- <!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js">
+	</script>
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
+	<!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js">
+	</script>
 
-<script>
-  // Your web app's Firebase configuration
+	<script>
+		// Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   var firebaseConfig = {
     apiKey: "AIzaSyCqqICGwZx5cheh2FRN2_emWDFmx1RzRE8",
@@ -24,17 +26,15 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
-</script>
+
+	</script>
 	<meta name="theme-color" content="#9C9898">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel='stylesheet' href='./css/sign.css'>
 	<meta name="description" content="">
 	<meta name="author" content="">
-
 	<title>Help! - Sign Up</title>
-
-
 	<link href="./css/bootstrap.min.css" rel="stylesheet">
 	<link href="./css/home.css" rel="stylesheet">
 	<link href="./css/sign.css" rel="stylesheet" />
@@ -71,56 +71,30 @@
 </header>
 
 <div class="signup-form">
-    <form action="/signup" method="post" class = "form">
+    <form action = "/authenticate" method = "POST" class = "form">
 		<h2>Sign Up</h2>
-		<p>Sign Up to start using Help!</p>
+		<p>Do not worry, this information is not stored on a server nor on the client. </p>
 		<hr>
         <div class="form-group">
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text">
-						<span class="fa fa-user"></span>
-            <input type="text" class="form-control" name="username" placeholder="Username" required="required" autofocus>   
-					</span> 
-                          
-				</div>
-				
-			</div>
-        </div>
-        <div class="form-group">
-          
-	
-        </div>
-    <div class="form-group">
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text">
-						<i class="fa fa-envelope"></i>
-            <input type="email" class="form-control" name="email" placeholder="Email" required="required">  
-					</span> 
-                           
-				</div>
-				
-			</div>
-    </div>
-		<div class="form-group">
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text">
-						<i class="fa fa-lock"></i>
-            <input type="password" class="form-control" name="password" placeholder="Password" required="required">
-					</span> 
-                             
-				</div>
-				
-			</div>
+          <script src="https://cdn.jsdelivr.net/gh/cursorweb/cursorweb-cdn/repl-auth/repl-auth.min.js"></script>
+    <script>
+        /*
+          Go here: https://github.com/cursorweb/replit-auth-html to learn more.
+        */
+        Auth.onerror = function(e) {
+          location.reload();
+        }
+        Auth.ondone = function(e){
+          location.reload();
+        }
+        new Auth("iframe").append();
+    </script> 
         </div>
 		
 		<div class="form-group">
-            <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
+            <button type = "submit" class="btn btn-primary btn-lg">Authenticate</button>
         </div>
-    </form>
-	<div class="text-center">Have an account? <a href="/login">Log In here</a></div>
+	
 </div>
   
 

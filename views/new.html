@@ -39,7 +39,22 @@
   <link rel="stylesheet" href="./css/tagit.ui-zendesk.css">
   <script src="js/tag-it.js" type="text/javascript" charset="utf-8"></script>
   <link href="css/jquery.tagit.css" rel="stylesheet" type="text/css">
+  <link rel = "stylesheet" href="https://kothing.github.io/editor/dist/css/kothing-editor.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/htmlmixed/htmlmixed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/xml/xml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/css/css.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.css"
+/>
 
+<link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
+<script src="https://kothing.github.io/editor/dist/kothing-editor.min.js"></script>
   <!----> 
 	<title>Help!</title>
 
@@ -108,7 +123,7 @@
 
    
       <div class="col-md-7 col-lg-8">
-        <form class="needs-validation" novalidate action = "/new" method = "POST">
+        <form class="needs-validation" novalidate action = "/new" method = "POST" id = "form">
           <div class="row">
             <div class="col">
               <label for="exampleFormControlInput1" class="form-label">Name</label>
@@ -120,9 +135,11 @@
             </div>
             </div>
             <div class="mb-3" style = "width:100%">
-              <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name = "des" required></textarea>
-              <span class = "text-muted">Markdown Supported</span>
+              <label for="des" class="form-label">Description</label>
+              <textarea class="form-control" id="des" rows="5" name = "des"  required></textarea>
+              <input type = 'hidden' value = "" id ='des-content' name = 'des-content'>
+          <span class = "text-muted">Describe your project. What you want it to be, what it is now, and what you are looking for.</span>
+              
             </div>
           </div>
           <div class="mb-3">
@@ -147,7 +164,7 @@
 </script>
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Create</button>
+          <button class="w-100 btn btn-primary btn-lg" id = "go">Create</button>
         </form>
       </div>
     </div>
@@ -162,5 +179,7 @@
     <script src="./js/bootstrap.bundle.min.js"></script>
 
       <script src="./js/form-validation.js"></script>
+      <script src = './js/kothing.js'></script>
+
   </body>
 </html>

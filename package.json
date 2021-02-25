@@ -21,9 +21,8 @@
     "firebase-admin": "^9.4.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
-    "showdown": "^1.9.1",
-    "swig": "^1.4.2",
-    "xss-filters": "^1.2.7"
+    "node-fetch": "^2.6.1",
+    "swig": "^1.4.2"
   },
   "devDependencies": {},
   "repository": {

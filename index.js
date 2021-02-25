@@ -13,9 +13,6 @@ var admin = require("firebase-admin");
 const crypto2 = require('./crypto.js');
 var Filter = require('bad-words');
 var filter = new Filter({ placeHolder: '*'});
-var showdown  = require('showdown'),
-    converter = new showdown.Converter();
-var xss = require('xss-filters').inHTMLData;
 
 const decrypt = crypto2.decrypt;
 const encrypt = crypto2.encrypt;
@@ -32,13 +29,20 @@ admin.initializeApp({
 
 
 //Helpers
-
+function search(tags){
+  
+}
 function getLocals(req){
-  return {
-    notSignedIn: (req.session.signedIn) ? false : true,
-    username: (req.session.userData) ? req.session.userData.username : false,
-    notifcations: (req.session.signedIn) ? req.session.userData.notifcations : false
-  }
+  return users.once('value',(snap)=>{
+    snap = snap.val();
+    var userData = snap[req.session.username];
+    return {
+      notSignedIn: (req.session.signedIn) ? false : true,
+      username: (userData) ? userData.username : false,
+      notifcations: (req.session.signedIn) ? userData.notifcations : false
+    }
+  })
+  
 }
 function truncate( str, n, useWordBoundary ){
   if (str.length <= n) { return str; }
@@ -111,15 +115,57 @@ app.get('/~',(req,res)=>{
   }
 });
 app.get('/new',(req,res)=>{
-  if(req.session.signedIn){
-    res.render('new',getLocals(req));
-  }else{
-    res.redirect('/login');
-  }
+  console.log(119)
+  users.once('value',(snap)=>{
+    console.log(121)
+    snap = snap.val();
+    console.log(123)
+    var userData = snap[req.session.username];
+    console.log(125)
+    if(req.session.signedIn){
+      console.log(127)
+      if(userData.identified){
+        console.log(129)
+        res.render('new',getLocals(req));
+      }else{
+        console.log(132)
+        res.redirect('/authenticate')
+      }
+    }else{
+      console.log(136)
+      res.redirect('/login');
+    }
+  })
+  
+});
+app.get('/authenticate',(req,res)=>{
+  users.once('value',(snap)=>{
+    snap = snap.val();
+    var userData = snap[req.session.username]
+  
+    if(req.session.signedIn){
+      if(!userData.identified){
+        
+        if(req.get('X-Replit-User-Id')){
+          userRef = db.ref('users/'+userData.username);
+          userRef.update({
+            "identified":true
+          });
+          res.redirect('/new');
+        }else{
+          res.render('replauth',getLocals(req));
+        }
+      }else{
+        res.redirect('/new');
+      }
+    }else{
+      res.redirect('/login');
+    }
+  });
 })
 app.get('/logout',(req,res)=>{
   req.session.signedIn = undefined;
-  req.session.userData = undefined;
+  req.session.username = undefined;
   res.redirect('/login');
 })
 app.get('/plea/:pleaID',(req,res)=>{
@@ -127,13 +173,19 @@ app.get('/plea/:pleaID',(req,res)=>{
   ref.on('value',(snapshot)=>{
     var snapshot = snapshot.val();
     var plea = snapshot[pleaID];
+    
     if(plea){
       if(req.session.signedIn){
-        var alreadyJoined = (plea.users.indexOf(req.session.userData.username) !== -1) ? true : false;
-        var notowner = (plea.author == req.session.userData.username) ? false : true
+        users.once('value',(snap)=>{
+          snap = snap.val();
+          userData = snap[req.session.username]
+          var alreadyJoined = (plea.users.indexOf(userData.username) !== -1) ? true : false;
+          var notowner = (plea.author == userData.username) ? false : true
+        })
       }else{
         var loggedIn = false;
         var notowner = true;
+        var alreadyJoined = false;
       }
       res.render('plea',{
           "author": plea.author,
@@ -143,8 +195,8 @@ app.get('/plea/:pleaID',(req,res)=>{
           "users":plea.users,
           "tags":plea.tags,
           "owner":notowner,
-          "username": (req.session.signedIn)?req.session.userData.username : false,
-          "joined": alreadyJoined,
+          "username": (req.session.signedIn)?req.session.username : false,
+          "joined": (alreadyJoined) ,
           "loggedIn": loggedIn
       });
     }else{
@@ -158,27 +210,34 @@ app.get('/joined/:pleaID',(req,res)=>{
 });
 app.get('/pleas',(req,res)=>{
   var pleas = [];
-
+  var userData = undefined;
+    if(req.session.signedIn){
+      users.once('value',(snap)=>{
+        snap = snap.val();
+        userData = snap[req.session.username]
+      })
+    }
   ref.once('value',(snapshot)=>{
     if(snapshot.val()){
     pleas = json2array(snapshot.val());
-
+    pleas = pleas.reverse();
     var newPleas = pleas.map((element)=>{
       var newElement= element;
       newElement.shortDes = truncate(element.des,100, true);
       return newElement
     })
+    
     res.render('pleas',
     {
       notSignedIn: (req.session.signedIn) ? false : true,
-      username: (req.session.userData) ? req.session.userData.username : false,pleas: newPleas
+      username: (userData) ? userData.username : false,pleas: newPleas
     }
     );
     }else{
       res.render('pleas',
     {
       notSignedIn: (req.session.signedIn) ? false : true,
-      username: (req.session.userData) ? req.session.userData.username : false,pleas: []
+      username: (userData) ? userData.username : false,pleas: []
     }
     );
     }
@@ -188,23 +247,32 @@ app.get('/pleas',(req,res)=>{
 app.get('/edit/:pleaID',(req,res)=>{
   if(req.session.signedIn){
     res.render('edit',{
-      username: req.session.userData.username,
+      username: req.session.username,
       
     })
+  }else{
+    res.redirect('/plea/'+req.params["pleaID"])
   }
 });
 
 // app.post();
 app.post('/join/:pleaID',(req,res)=>{
+  var userData = undefined;
+    if(req.session.signedIn){
+      users.once('value',(snap)=>{
+        snap = snap.val();
+        userData = snap[req.session.username]
+      })
+    }
   if(req.session.signedIn){
     var pleaID = req.params['pleaID'];
     ref.once('value',(snapshot)=>{
       var snap = snapshot.val();
       var plea = snap[pleaID];
-      plea.users[plea.users.length]=req.session.userData.username;
+      plea.users[plea.users.length]=userData.username;
       var pleaRef = ref.child(pleaID);
       pleaRef.update(plea);
-      var username = req.session.userData.username;
+      var username = userData.username;
      // notifcation(pleaID,req.session.username);
       res.redirect('/joined/'+pleaID);
       
@@ -217,57 +285,70 @@ app.post('/signup',(req,res)=>{
   var password = crypto.SHA256(req.body.password).toString(crypto.enc.Hex);
   var username = req.body.username;
   var email = req.body.email;
+  console.log(282)
   users.on('value',(snap)=>{
     if(snap[username]){
       res.redirect('/login?exists=true');
     }else{
+      console.log(287)
       var data = {
         username: username,
         email: email,
         notifcations:[{title:"Welcome!",body:"Welcome to Help!",buttonLink:"/",buttonTitle:"Go Home"}],
-        passwordHash: password
+        passwordHash: password,identified: false
       }
+      console.log(294)
       users.child(username).set(data);
-      res.redirect('/login');
+      console.log(296)
+      
     }
   })
+  req.session.username = username;
+  req.session.signedIn = username;
+  res.redirect('/~');
 });
 app.post('/login',(req,res)=>{
-  var username = req.body.username;
-  var password = crypto.SHA256(req.body.password).toString(crypto.enc.Hex)
-  users.on("value",(d)=>{
-      d = d.val();
-      d = d[username];
-      if(d){
-        req.session.signedIn=username;
-        req.session.userData=d;
-        res.redirect('/~')
-      }else{
-        res.redirect('/login?doesnotmatch=true');
-      }
+ 
+  users.once('value',(snap)=>{
+    snap = snap.val();
+    userData = snap[req.session.username]
+    var username = req.body.username;
+    var password = crypto.SHA256(req.body.password).toString(crypto.enc.Hex)
+    users.on("value",(d)=>{
+        d = d.val();
+        d = d[username];
+        d = (d.passwordHash == password);
+        if(d){
+          req.session.signedIn=username;
+          req.session.username = username;
+          res.redirect('/~')
+        }else{
+          res.redirect('/login?doesnotmatch=true');
+        }
+      })
     })
 });
 app.post('/new',(req,res)=>{
   if(req.session.signedIn){
     var title = req.body.title;
-    var des = req.body.des;
-    var author = req.session.userData.username;
+    var des = req.body["des-content"];
+    var author = req.session.username;
     var link = req.body.link;
     var tags = req.body.tags;
     tags = tags.split(',');
     title = filter.clean(title);
     des = filter.clean(des);
-    des = xss(des);
-    des = converter.makeHtml(des);
+    
     var pleaRef = ref.push({
-      title:title,des:des,author:author,users:[author],username: req.session.userData.username,link:link,tags:tags
+      title:title,des:des,author:author,users:[author],username: req.session.username,link:link,tags:tags
     });
     res.redirect('/plea/'+pleaRef.key);
   }else{
     res.redirect('/login')
   }
   
-})
+});
+
 // app.listen();
 http.listen(3000, () => {
   console.log('listening on port:3000');

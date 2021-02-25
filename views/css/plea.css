@@ -15,16 +15,9 @@ blockquote{
   /*Borders - (Optional)*/
   border-left: 15px solid #8b8783;
   border-right: 2px solid #8b8783;
-  
-  /*Box Shadow - (Optional)*/
-  -moz-box-shadow: 2px 2px 15px #ccc;
-  -webkit-box-shadow: 2px 2px 15px #ccc;
-  box-shadow: 2px 2px 15px #ccc;
 }
 
-blockquote::before{
-  content: "\201C"; /*Unicode for Left Double Quote*/
-  
+blockquote::before{  
   /*Font*/
   font-family: Georgia, serif;
   font-size: 60px;
@@ -37,10 +30,6 @@ blockquote::before{
   top:5px;
 }
 
-blockquote::after{
-  /*Reset to make sure*/
-  content: "";
-}
 
 blockquote a{
   text-decoration: none;
@@ -86,4 +75,11 @@ pre{
   padding: .1rem .3rem .2rem;
   border-radius: .2rem;
   color: #DD3687;
+}
+.des a{
+  text-decoration: none;
+  color: dodgerblue;
+}
+.des a:hover{
+  text-decoration: underline;
 }

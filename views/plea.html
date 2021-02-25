@@ -46,6 +46,8 @@
 			}
 		}
 	</style>
+    <link rel = "stylesheet" href="../css/kothing.css"/>
+
 </head>
 <body>
    <header>
@@ -88,7 +90,7 @@
     <div class="col-md-12">
       <h1>{{ title }}</h1>
       <h4 class = "text-muted">@{{ author }}</h4>
-      <p>{{ des|safe }}</p>
+      <p class = "des">{{ des|safe }}</p>
         {% if owner %}
         {% if joined %}
           

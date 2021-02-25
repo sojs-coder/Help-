@@ -11,4 +11,6 @@ Just click "posts", and find something that interests you.
 ### If you have an idea in mind
 Just hit "New", and fill out the information. People looking for things to do may stumble upon your thing and ask to help, in that case, you got yourself a helper.
 
+# TO-DO:
+
 ### Github: [https://github.com/sojs-coder/Help-](https://github.com/sojs-coder/Help-)
