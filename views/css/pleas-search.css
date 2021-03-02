@@ -1,0 +1,16 @@
+input, button, label{
+  display: inline;
+}
+#q{
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid grey;
+  border-radius: 0px;
+}
+#q:focus{
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid grey;
+}

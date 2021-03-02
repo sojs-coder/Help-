@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>More Repl.it Authentication</title>
+    <style>
+      .iframe{
+        width:100%;
+        height:100%;
+        border: none;
+        margin:none;
+        position: absolute;
+        top:0;
+        left: 0;
+      }
+    </style> 
+  </head>
+  <body>
+    
+    <script src="https://cdn.jsdelivr.net/gh/cursorweb/cursorweb-cdn/repl-auth/repl-auth.min.js"></script>
+    <script>
+        /*
+          Go here: https://github.com/cursorweb/replit-auth-html to learn more.
+        */
+        Auth.onerror = function(e) {
+          location.reload();
+        }
+        Auth.ondone = function(e){
+          window.opener.location.reload(false);
+          window.close();
+        }
+        new Auth("iframe").append();
+    </script> 
+  </body>
+</html>

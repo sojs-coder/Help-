@@ -71,28 +71,17 @@
 </header>
 
 <div class="signup-form">
-    <form action = "/authenticate" method = "POST" class = "form">
+    
 		<h2>Sign Up</h2>
 		<p>Do not worry, this information is not stored on a server nor on the client. </p>
 		<hr>
         <div class="form-group">
-          <script src="https://cdn.jsdelivr.net/gh/cursorweb/cursorweb-cdn/repl-auth/repl-auth.min.js"></script>
-    <script>
-        /*
-          Go here: https://github.com/cursorweb/replit-auth-html to learn more.
-        */
-        Auth.onerror = function(e) {
-          location.reload();
-        }
-        Auth.ondone = function(e){
-          location.reload();
-        }
-        new Auth("iframe").append();
-    </script> 
+          
+   
         </div>
 		
 		<div class="form-group">
-            <button type = "submit" class="btn btn-primary btn-lg">Authenticate</button>
+            <button id = "auth" class="btn btn-primary btn-lg">Authenticate</button>
         </div>
 	
 </div>
@@ -109,5 +98,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="./js/bootstrap.bundle.min.js"></script>
+     <script src = "./js/authpop.js">
+    </script> 
   </body>
 </html>
