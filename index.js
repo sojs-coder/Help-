@@ -16,15 +16,16 @@ var filter = new Filter({ placeHolder: '*' });
 
 const decrypt = crypto2.decrypt;
 const encrypt = crypto2.encrypt;
-// Fetch the service account key JSON file contents
+// Fetch the service account key JSON file contents 
 var serviceAccount = require('./serviceKey.json');
 serviceAccount = decrypt(serviceAccount)
 serviceAccount = JSON.parse(serviceAccount);
 
-// Initialize the app with a service account, granting admin privileges
+// // Initialize the app with a service account, granting admin privileges
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://help-38d77-default-rtdb.firebaseio.com/"
+  databaseURL: "https://help-f52dd-default-rtdb.firebaseio.com"
 });
 
 //Helpers
@@ -198,6 +199,7 @@ var users = db.ref('users');
 
 
 //app.get();
+
 app.get('/', (req, res) => {
   if (!req.session.signedIn) {
     getLocals(req, (json) => {
