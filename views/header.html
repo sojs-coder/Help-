@@ -1,6 +1,6 @@
 <header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
+		<nav class="navbar navbar-expand-md navbar-dark fixed-top bgdark">
+			<div class="container-fluid headerdiv">
 				<a class="navbar-brand" href="/">Help!</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -8,16 +8,34 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link" href="/home">Home</a>
+            <a  href="/" class ="nav-link">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" 
-            aria-current="page" href="/signup">Sign Up</a>
+            <a href="/pleas" class="nav-link">Pleas</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link " href="/pleas" >Posts</a>
+            <a href="/search" class="nav-link">Search Pleas</a>
           </li>
+          <li class="nav-item">
+            <a href="/contact" class="nav-link">Contact Us</a>
+          </li>
+          {% if username %}
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+          <li class = "nav-item">
+            <span class = "nav-link active">Logged in as: {{ username }}
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="/login" >Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup" >Sign Up</a>
+          </li>
+          {% endif  %}
         </ul>
+
         <form class="d-flex">
           <a class = "btn btn-primary" href="/new">+ New</a>
         </form>
@@ -25,3 +43,4 @@
     </div>
   </nav>
 </header>
+<script src="../js/link_analyzer.js"></script>

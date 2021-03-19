@@ -28,6 +28,8 @@
   firebase.analytics();
 
 	</script>
+  <meta name = "author" content = "SoJS">
+  <meta name = "description" content = "Search for a plea. Irelevant results marked.">
 	<link rel="stylesheet" href="./css/tag-display.css">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +38,7 @@
 	</script>
 	<link rel="stylesheet" href="../css/home.css">
 	<link rel="stylesheet" href="./css/pleas-search.css">
-
+  <link href="./css/dark-theme.css" rel="stylesheet">
 	
 	<title>Pleas - Help!</title>
 
@@ -58,44 +60,9 @@
 </head>
 
 <body>
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a  href="/" class ="nav-link">Home</a>
-          </li>
-          <li class="nav-item">
-            <a href="/pleas" class="nav-link active" aria-current="page">Posts</a>
-          </li>
-          {% if username %}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-          <li class = "nav-item">
-            <span class = "nav-link active">Logged in as: {{ username }}
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/login" >Login</a>
-          </li>
-          {% endif  %}
-        </ul>
+	{% include "./header.html" %}
 
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
-
-<main style = "margin: 20px;">
+<main  style = "margin: 20px;"  >
 
   
   {% if noresults %}
@@ -124,26 +91,31 @@
   
   {% for plea in newOrder %}
     <div class="card-body">
+      
       <h5 class="card-title">{{ plea.title }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">@{{ plea.author }}</h6>
       <p class="card-text">{{ plea.shortDes }}</p>
+      
       <p class = "text-muted">Tags</p>
       <ul class = "tags">
+          
       {% for tag in plea.tags %}
-        <a href = "/search?q={{ tag }}"><li class = "tag">{{ tag }}</li></a>
+        <a  href = "/search?q={{ tag }}"><li class = "tag">{{ tag }}</li></a>
       {% endfor %}
+          
       </ul>
+      
       <a href="/plea/{{ plea.key }}" class="btn btn-primary">View</a>
       </div>
       {% if plea.notrelevant %}
-      <div class = "text-muted">This result is not very relevant. Please change your search to get more results</div>
+      <div >This result may not be what you are looking for</div>
       {% endif %}
       <hr>
   {% endfor %}
   </div>
   <footer class="container">
     <p class="float-end"><a href="#">Back to top</a></p>
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
+    {% include "./footer.html" %}
   </footer>
 </main>
 </body>

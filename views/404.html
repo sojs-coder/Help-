@@ -28,8 +28,6 @@
   firebase.analytics();
 
 	</script>
-  <meta name = "author" content = "SoJS">
-  <meta name = "description" content = "A nice list of all pleas for help.">
 	<link rel="stylesheet" href="./css/tag-display.css">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,8 +35,10 @@
 	<script src="../js/bootstrap.bundle.min.js">
 	</script>
 	<link rel="stylesheet" href="../css/home.css">
-	<link rel="stylesheet" href="./css/pleas-search.css">
-  <link href="./css/dark-theme.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/404.css">
+  <link rel="stylesheet" href="../css/light-theme.css">
+
+
 	
 	<title>Pleas - Help!</title>
 
@@ -59,44 +59,28 @@
 	</style>
 </head>
 
-<body  class = "bgdark">
+<body>
 	{% include "./header.html" %}
 
+<main style = "margin: 20px;">
 
-<main style = "margin: 20px; color: #eee;">
-
-  
-  
-  <div style = "text-align: center;  padding-bottom: 6px; width: 50%;position: relative; left: 25%; right: 25%;"><h1 class = "display-3" >Pleas</h1><span  class = "text-muted">Search for a plea</span>
-  <form action = "search" method = "GET" class = "form-inline">
-    <div class="form-group mx-sm-3 mb-2">
-    <input class="form-control" id="q" placeholder="Search"  name = "q">
-    <span class = "text-muted">Separate Tags with spaces. Enter to search</span>
+<div id="main">
+    	<div class="fof">
+        		<h1 id = "fof"></h1>
+        <div class = "body">
+        <p id = "body">
+        </p>
+        </div>
+        <div class = "buttons">
+          <p>If you think this is an error, <a href = "/contact">Contact Us</a>. <br>Handy Links:</p>
+          <a class = "btn btn-primary" href = "/">Go home</a> or <a href = "/search" class = "btn btn-primary">search for a plea</a>
     </div>
-  </div>
-  
-  </form>
-  <div class = "container-fluid">
-  <!-- Cards -->
-  {% for plea in pleas %}
-    <div class="card-body">
-      <h5 class="card-title">{{ plea.title }}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">@{{ plea.author }}</h6>
-      <p class="card-text">{{ plea.shortDes }}</p>
-      <p class = "text-muted">Tags</p>
-      <ul class = "tags">
-      {% for tag in plea.tags %}
-        <a href = "/search?q={{ tag }}"><li class = "tag">{{ tag }}</li></a>
-      {% endfor %}
-      </ul>
-      <a href="/plea/{{ plea.key }}" class="btn btn-primary">View</a>
-      </div>
-      <hr>
-  {% endfor %}
-  </div>
+    	</div>
+</div>
   <footer class="container">
     <p class="float-end"><a href="#">Back to top</a></p>
     {% include "./footer.html" %}
   </footer>
+  <script src="../js/404.js"></script>
 </main>
 </body>

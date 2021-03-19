@@ -1,0 +1,35 @@
+User-agent: Googlebot smartphone
+Disallow: /new/
+Disallow: /~/
+Disallow: /edit/
+Disallow: /authenticate/
+Disallow: /accept/
+Disallow: /404/
+Disallow: /notifications/
+Disallow: /auth/
+Noindex: /auth/
+Noindex: /new/
+Noindex: /~/
+Noindex: /edit/
+Noindex: /authenticate/
+Noindex: /accept/
+Noindex: /404/
+Noindex: /notifications/
+
+User-agent: Googlebot
+Disallow: /new/
+Disallow: /~/
+Disallow: /edit/
+Disallow: /authenticate/
+Disallow: /accept/
+Disallow: /404/
+Disallow: /notifications/
+Disallow: /auth/
+Noindex: /auth/
+Noindex: /new/
+Noindex: /~/
+Noindex: /edit/
+Noindex: /authenticate/
+Noindex: /accept/
+Noindex: /404/
+Noindex: /notifications/

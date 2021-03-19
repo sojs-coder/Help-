@@ -5,12 +5,14 @@ input, button, label{
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid #ddd;
   border-radius: 0px;
+  background-color: #03030e;
 }
 #q:focus{
   border-top: none;
   border-left: none;
   border-right: none;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid #ededed;
+  background-color: #03030e;
 }

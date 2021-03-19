@@ -1,0 +1,38 @@
+a{
+  color: lightblue;
+  text-decoration: none !important;
+}
+body{
+  background-color: #03030e !important;
+}
+.text-muted{
+  color: #cdcdcd;
+}
+.btn-primary{
+  background-color: dodgerblue !important;
+  color: white !important;
+}
+.btn-primary:hover{
+  background-color: rgb(5, 102, 199) !important;
+}
+iframe{
+  border: 1px solid white;
+}
+
+input,.cards,.container,main,body,article,footer,iframe{
+  color: #eee !important;
+  background-color: #03030e !important;
+}
+.unread{
+  background-color: #252525 !important;
+  color: rgb(209, 208, 208);
+  border-radius: 6px;
+  margin: 6px;
+  border: none;
+}
+.headerdiv{
+  background-color: #03030e !important;
+}
+.bgdark{
+  background-color: #03030e !important;
+}

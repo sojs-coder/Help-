@@ -12,6 +12,9 @@
   padding: 5px;
   font-size: 12px;
 }
+.tag:hover::before{
+  content: attr("Click to search")
+}
 .tags a{
   text-decoration: none;
 }

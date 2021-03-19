@@ -29,8 +29,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel='stylesheet' href='./css/sign.css'>
-	<meta name="description" content="">
-	<meta name="author" content="">
+	<meta name="description" content="Sign up to help to start using it!">
+	<meta name="author" content="SoJS">
 
 	<title>Help! - Sign Up</title>
 
@@ -42,33 +42,7 @@
 </head>
 
 <body>
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="/">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/home">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" 
-            aria-current="page" href="/signup">Sign Up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/pleas" >Posts</a>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
+	{% include "./header.html" %}
 
 <div class="signup-form">
     <form action="/signup" method="post" class = "form">
@@ -115,7 +89,7 @@
 				
 			</div>
         </div>
-		
+		<p id = "errorMessage">&nbsp;</p>
 		<div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
         </div>
@@ -126,7 +100,7 @@
 
     <footer class="container">
     
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
+     {% include "./footer.html" %}
   </footer>
 
     <!-- Bootstrap core JavaScript
@@ -135,5 +109,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/doesnotmatch.js"></script>
   </body>
 </html>

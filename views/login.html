@@ -2,16 +2,18 @@
 <html lang="en">
 
 <head>
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js">
+	</script>
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
+	<!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js">
+	</script>
 
-<script>
-  // Your web app's Firebase configuration
+	<script>
+		// Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   var firebaseConfig = {
     apiKey: "AIzaSyCqqICGwZx5cheh2FRN2_emWDFmx1RzRE8",
@@ -25,13 +27,14 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
-</script>
+
+	</script>
 	<meta name="theme-color" content="#9C9898">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel='stylesheet' href='./css/sign.css'>
-	<meta name="description" content="">
-	<meta name="author" content="">
+	<meta name="description" content="Login to Help to use help.">
+	<meta name="author" content="SoJS">
 
 	<title>Help! - Log In</title>
 
@@ -43,43 +46,18 @@
 </head>
 
 <body>
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="/">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/home">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" 
-            aria-current="page" href="/login">Log In</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/pleas" >Posts</a>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
+	{% include "./header.html" %}
 
-<div class="signup-form">
-    <form action="/login" method="post" class = "form">
-		<h2>Log In</h2>
-		<p>Log In to start helping!</p>
-		<hr>
-        <div class="form-group">
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text">
+
+	<div class="signup-form">
+		<form method="post" action="/login" class="form" id="form">
+			<h2>Log In</h2>
+			<p>Log In to start helping!</p>
+			<hr>
+			<div class="form-group">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">
 						<span class="fa fa-user"></span>
             <input type="text" class="form-control" name="username" placeholder="Username" required="required" autofocus>   
 					</span> 
@@ -99,18 +77,19 @@
 				</div>
 				
 			</div>
-        </div>
-		
+      </div>
+		<p id = "errorMessage">&nbsp</p>
 		<div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg">Log In</button>
         </div>
+        
     </form>
 	<div class="text-center">Don't have an account? <a href="/signup">Sign Up here</a></div>
 </div>
   
 
     <footer class="container">
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
+      {% include "./footer.html" %}
   </footer>
 
     <!-- Bootstrap core JavaScript
@@ -119,5 +98,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src = "./js/doesnotmatch.js"></script>
   </body>
 </html>

@@ -2,15 +2,19 @@
 <html lang="en">
 
 <head>
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js">
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
+	</script>
+
+	<!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js">
 
-<script>
-  // Your web app's Firebase configuration
+	</script>
+
+	<script>
+		// Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   var firebaseConfig = {
     apiKey: "AIzaSyCqqICGwZx5cheh2FRN2_emWDFmx1RzRE8",
@@ -24,14 +28,16 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
-</script>
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="">
-	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+	<meta name="author" content="SoJS">
 	<meta name="generator" content="Hugo 0.79.0">
 	<link rel="stylesheet" href="./css/home.css" />
 	<link rel="stylesheet" href="./css/cards.css">
+	<link rel="stylesheet" href="./css/dark-theme.css">
+	<link rel="stylesheet" href="./css/embeds.css" />
 	<title>Help!</title>
 
 
@@ -59,79 +65,184 @@
 
 <body>
 
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/~">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/pleas">Posts</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout" aria-disabled="true">Logout</a>
-          </li>
-          <li class = "nav-item">
-            <span class = "nav-link active">Logged in as: {{ username }}
-          </li>
-        </ul>
+	{% include "./header.html" %}
 
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
+	<main style="margin-top: 5em;margin-left: 20px;margin-right: 20px; margin-bottom: 20px;">
+
+		<script>
+			function timeDifference(date1,date2) {
+    var difference = date1- date2;
+    var yearsDifference = Math.floor(difference/1000/60/60/24/365);
+    difference -= yearsDifference*1000*60*60*24*365
+    var daysDifference = Math.floor(difference/1000/60/60/24);
+    difference -= daysDifference*1000*60*60*24
+
+    var hoursDifference = Math.floor(difference/1000/60/60);
+    difference -= hoursDifference*1000*60*60
+
+    var minutesDifference = Math.floor(difference/1000/60);
+    difference -= minutesDifference*1000*60
+
+    var secondsDifference = Math.floor(difference/1000);
+
+
+    
+    return {
+      days: daysDifference,
+      minutes: minutesDifference,
+      hours: hoursDifference,
+      seconds: secondsDifference,
+      years: yearsDifference
+    }
+}
+var now = new Date().getTime();
+		</script>
+		<a class="btn btn-primary" style="float:right;" href="/new">+ New</a>
+		<h1>Notifications</h1>
+		<div class="container-fluid">
+			<div class="row">
+				{% for notif in notifications %} {% if notif.notunread %}
+				<div class="col col-sm cards">
+					<div class="card-body">
+						<h5 class="card-title">{{ notif.title }} <span class = "text-muted">
+        <script>
+          var diference;
+          var diff = timeDifference(now, {{ notif.timestamp }});
+          if(diff.years >= 3){
+            document.write(diff.years + " years ago");
+          }else if(diff.years >= 1){
+            document.write(diff.years + " years, " + diff.days+ " days ago");
+          }else if(diff.days >= 1){
+            document.write(diff.days + " days, "+ diff.hours + " hours ago");
+          }else if(diff.hours >= 1){
+            document.write(diff.hours + " hours, "+ diff.minutes+ " minutes ago");
+          }else if(diff.minutes >= 1){
+            document.write(diff.minutes + " minutes, "+diff.seconds+ " seconds ago")
+          }else{
+            document.write(diff.seconds + " seconds ago")
+          }
+          
+        </script>
+
+      </span>
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">
+      {{ notif.subtitle }}
+    </h6>
+    <p class="card-text">
+      {{ notif.body }}
+    </p>
+    <div class = "btn-group" role = "group">
+      <a href="{{ notif.buttonLink }}" class="btn btn-secondary">
+        {{ notif.buttonTitle }}
+      </a>
+      <button class = "btn btn-secondary" disabled>
+        Marked As Read
+      </button>
+    </div>
+    </div>
+  </div>
+  {% else %}
+    <div class = "card col-sm cards unread">
+      <div class="card-body" style = "margin: 6px;" id = "notif{{ loop.index0 }}">
+        <h5 class="card-title">
+            {{ notif.title }}
+          <span class = "text-muted">
+            <script>
+              var diference;
+              var diff = timeDifference(now, {{ notif.timestamp }});
+              if(diff.years >= 3){
+                document.write(diff.years + " years ago");
+              }else if(diff.years >= 1){
+                document.write(diff.years + " years, " + diff.days+ " days ago");
+              }else if(diff.days >= 1){
+                document.write(diff.days + " days, "+ diff.hours + " hours ago");
+              }else if(diff.hours >= 1){
+                document.write(diff.hours + " hours, "+ diff.minutes+ " minutes ago");
+              }else if(diff.minutes >= 1){
+                document.write(diff.minutes + " minutes, "+diff.seconds+ " seconds ago")
+              }else{
+                document.write("<span class = 'timestamp'>"+ diff.seconds + " seconds ago</span>")
+              }
+            </script>
+          </span>
+        </h5>
+        <h6 class="card-subtitle mb-2 text-muted subtitle">
+          {{ notif.subtitle }}
+        </h6>
+        <p class="card-text">
+          <span class = "text">
+            {{ notif.body }}
+          </span>
+        </p>
+        <div class = "btn-group">
+          <a href="{{ notif.buttonLink }}" class="btn btn-primary link" id = "link{{ loop.index0 }}">
+            {{ notif.buttonTitle }}
+          </a>
+          <button class = "btn btn-primary" onclick = "read('{{ loop.index0 }}')">
+            Mark As Read
+          </button>
+        </div>
       </div>
     </div>
-  </nav>
-</header>
-
-<main style = "margin: 20px;">
-
+    {% endif %}
+    {% endfor %}
+    
   
-  <a class = "btn btn-primary" style = "float:right;" href="/new">+ New</a>
-  <h1>Notifications</h1>
-  <div class = "container-fluid">
-  <div class = "row">
-  <!-- Cards -->
-  <div class="card col-sm">
-  <div class="card-body">
-    <h5 class="card-title">SoJS</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Help!</h6>
-    <p class="card-text">SoJS accepted you help on <i>Help!</i></p>
-    <a href="{{ plea.replLink }}" class="btn btn-primary">Go to repl</a>
-    </div>
-  </div>
-  <div class="card col-sm">
-  <div class="card-body">
-    <h5 class="card-title">SoJS</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Help!</h6>
-    <p class="card-text">SoJS accepted you help on <i>Help!</i></p>
-    <a href="{{ plea.replLink }}" class="btn btn-primary">Go to repl</a>
-    </div>
-  </div>
-  <div class="card col-sm">
-  <div class="card-body">
-    <h5 class="card-title">SoJS</h5>
-    <h6 class="card-subtitle mb-2 text-muted">Help!</h6>
-    <p class="card-text">SoJS accepted you help on <i>Help!</i></p>
-    <a href="{{ plea.replLink }}" class="btn btn-primary">Go to repl</a>
-    </div>
-  </div>
-  
-  <!-- Note: three cards. Currently using just three to show example layout. End cards here -->
    <a href= "/notifications" style = "margin-top: 6px;" class = "btn btn-primary">View All</a>
   </div>
  
   </div>
-    
+  <div class = "below-notifs row" style = "margin: 6px">
+    <div class = "col" style = "overflow-x: wrap; overflow-y: scroll; height: 40vh;">
+      <h2> Help Terms Of Use</h2>
+      {% include "./tosembed.html" %}
+    </div>
+    <div class = "warnings col">
+      <div class="alert alert-warning row" role="alert">
+        <p class = "col">Please read our <a href = "/site/privacy" class = "alert-link" style = "display: inline">privacy policy</a> and <a href = "/site/terms" class = "alert-link" style = "display: inline">terms of use</a>. The box to the left contains the terms, as we consider it the most important of the two</p>
+      </div>
+      <div class="alert alert-primary row" role="alert">
+        <p class = "col">If you need help navigating, or dont know excactly what this is about, try reading the <a href = "https://github.com/sojs-coder/Help-/wiki" class = "alert-link" target = "_blank" style = "display: inline">wikis</a>.</p>
+      </div>
+      <div class="alert alert-danger row" role="alert">
+        <p class = "col">This site is designed for laptop and desktop use. Some pages might not work properly, or the UI will be off, if you access it on mobile.</p>
+        
+      </div>
+    </div>
+    <!-- more than three alerts, go here -->
+    <div class="alert alert-info row" role="alert">
+        <p class = "col">These little things in boxes are site-wide alerts, and do not differ from one account to another. They are hear to notify you of site-wide changes, such as changes to the policys, or updates.</p>
+        
+      </div>
+  </div>
 
   <footer class="container">
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
+    <p class="float-end"><a href="#">Back to top</a></p>
+    {% include "./footer.html" %}
   </footer>
 </main>
+<script src="./js/notif.js"></script>
+<script>
+  var links = document.querySelectorAll("a.link");
+links.forEach((d)=>{
+  d.onclick = (e)=>{
+    e.preventDefault();
+    var href = d.href;
+    var id = d.id;
+    var notif = id.split('link');
+    notif = notif.join("");
+    read(notif, true);
+    if(href.indexOf('help.sojs.repl') !== -1){ 
+      
+      window.location.href = href;
+    }else{
+      var win = window.open(href, '_blank');
+      location.reload();
+      win.focus();
+    }
+  }
+})
+</script>
 </body>
+</html>

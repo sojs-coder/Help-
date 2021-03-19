@@ -30,16 +30,33 @@
 	<meta name="description" content="">
 	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
 	<meta name="generator" content="Hugo 0.79.0">
-	<link rel="stylesheet" href="./css/home.css" />
-	<link rel="stylesheet" href="./css/cards.css">
+	<link rel="stylesheet" href="../css/home.css" />
+	<link rel="stylesheet" href="../css/cards.css">
   
   <!-- Tags -->
-  <script src="./js/jquery.1.5.2.js" type="text/javascript" charset="utf-8"></script>
-  <script src="./js/jquery.1.8.12.js" type="text/javascript" charset="utf-8"></script>
-  <link rel="stylesheet" href="./css/tagit.ui-zendesk.css">
-  <script src="js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-  <link href="css/jquery.tagit.css" rel="stylesheet" type="text/css">
+  <script src="../js/jquery.1.5.2.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../js/jquery.1.8.12.js" type="text/javascript" charset="utf-8"></script>
+  <link rel="stylesheet" href="../css/tagit.ui-zendesk.css">
+  <link rel="stylesheet" href="../css/light-theme.css"/>
 
+  <script src="../js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+  <link href="../css/jquery.tagit.css" rel="stylesheet" type="text/css">
+  <link rel = "stylesheet" href="https://kothing.github.io/editor/dist/css/kothing-editor.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/htmlmixed/htmlmixed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/xml/xml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/mode/css/css.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.css"
+/>
+
+<link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"></script>
+<script src="https://kothing.github.io/editor/dist/kothing-editor.min.js"></script>
   <!----> 
 	<title>Help!</title>
 
@@ -47,7 +64,7 @@
 
 
 	<!-- Bootstrap core CSS -->
-	<link href="./css/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/bootstrap.min.css" rel="stylesheet">
 
 	<style>
 		.bd-placeholder-img {
@@ -68,68 +85,42 @@
 
 <body>
 
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/~">Home</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="/pleas" aria-current="page" >Posts</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout" aria-disabled="true">Logout</a>
-          </li>
-          <li class = "nav-item">
-            <span class = "nav-link active">Logged in as: {{ username }}
-          </li>
-        </ul>
+{% include "./header.html" %}
 
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
 
 <div class="container">
   <main>
     <div class="py-5 text-center">
       <h2>New Plea</h2>
-      <p class="lead">Fill out the form, and hit create. Don't worry - Help! is on the way!</p>
+      <p class="lead">Update Plea <b>{{ plea.title }}</b></p>
     </div>
 
    
       <div class="col-md-7 col-lg-8">
-        <form class="needs-validation" novalidate action = "/new" method = "POST">
+        <form class="needs-validation" novalidate action = "/edit/{{ plea.id }}" method = "POST" id = "form">
           <div class="row">
             <div class="col">
               <label for="exampleFormControlInput1" class="form-label">Name</label>
-              <input class="form-control" id="exampleFormControlInput1" name = "title" required>
+              <input class="form-control" id="exampleFormControlInput1" name = "title" value = "{{ plea.title }}"required>
             </div>
             <div class="col">
               <label for="exampleFormControlInput1" class="form-label">Repl Link <a href = "https://github.com/sojs-coder/Help-/wiki/Linking-A-Repl" style = "text-decoration: none">?</a></label>
-              <input type = "search" class="form-control" id="exampleFormControlInput1" name = "link" required>
+              <input type = "search" class="form-control" id="exampleFormControlInput1" name = "link" value = "{{ plea.link }}" required>
             </div>
             </div>
             <div class="mb-3" style = "width:100%">
-              <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" rows="5" name = "des" required></textarea>
-              <span class = "text-muted">Markdown Supported</span>
+              <label for="des" class="form-label">Description</label>
+              <textarea class="form-control" id="des" rows="5" name = "des"  required>{{ plea.des }}</textarea>
+              <input type = 'hidden' value = "" id ='des-content' name = 'des-content'>
+          <span class = "text-muted">Describe your project. What you want it to be, what it is now, and what you are looking for.</span>
+              
             </div>
           </div>
           <div class="mb-3">
               <label for="exampleFormControlTextarea1" class="form-label">Tags <span class = "text-muted">Separate by space. For multi-word tags, surround in quotes.</span></label>
               <div class="input-group">
                 <div class="form-search">
-                  <input id = "myTags" value = "" placeholder="Tags here" name = "tags"/>
+                  <input id = "myTags" value = "{{ plea.tags }}" placeholder="Tags here" name = "tags"/>
               </div>
               
             </div>
@@ -147,20 +138,22 @@
 </script>
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Create</button>
+          <button class="w-100 btn btn-primary btn-lg" id = "go">Update</button>
         </form>
       </div>
     </div>
   </main>
 
   <footer class="container">
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
+    {% include "./footer.html" %}
   </footer>
 </div>
 
 
-    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
 
-      <script src="./js/form-validation.js"></script>
+      <script src="../js/form-validation.js"></script>
+      <script src = '../js/kothing.js'></script>
+
   </body>
 </html>

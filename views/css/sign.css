@@ -1,6 +1,6 @@
 body {
 	color: #fff;
-	background-color: #9C9898;
+	background-color: #03030e;
 	font-family: 'Roboto', sans-serif;
 }
 .form-control {
@@ -97,4 +97,7 @@ a{
 }
 a:hover{
   color:#e1e1e1;
+}
+#errorMessage{
+  color: rgb(226, 25, 25);
 }

@@ -24,11 +24,16 @@
   firebase.analytics();
 </script>
   <meta charset="UTF-8">
+  <meta name="robots" content="nofollow">
+  <meta name = "author" content = "SoJS">
+  <meta name = "description" content = "{{ author }} is asking for help on {{ title }}"
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link rel = "stylesheet" href="../css/kothing.css"/>
 <script src="../js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href = "../css/home.css">
 <link rel="stylesheet" href="../css/plea.css"/>
+<link href="../css/light-theme.css" rel="stylesheet">
   <title>{{ title }}</title>
   
 <style>
@@ -46,55 +51,22 @@
 			}
 		}
 	</style>
-    <link rel = "stylesheet" href="../css/kothing.css"/>
+    
 
 </head>
 <body>
-   <header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a  href="/" class ="nav-link">Home</a>
-          </li>
-          <li class="nav-item">
-            <a href="/pleas" class="nav-link active" aria-current="page">Posts</a>
-          </li>
-          {% if username %}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-          <li class = "nav-item">
-            <span class = "nav-link active">Logged in as: {{ username }}
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/login" >Login</a>
-          </li>
-          {% endif  %}
-        </ul>
+   {% include "./header.html" %}
 
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
   <div class = "container">
     <div class="col-md-12">
       <h1>{{ title }}</h1>
       <h4 class = "text-muted">@{{ author }}</h4>
+      
       <p class = "des">{{ des|safe }}</p>
         {% if owner %}
         {% if joined %}
           
-            <a  class = "btn" href="#" style="background-color: lightgrey;cursor:not-allowed">Joined</a>
+            <a  class = "btn btn-secondary" href="#"  disabled style = "cursor: not-allowed">Joined</a>
         {% else %}
           <form action = "/join/{{ id }}" method = "POST">
             <input type="submit" class = "btn btn-primary" value="Join!">
@@ -113,5 +85,30 @@
       </ul>
       
   </div>
+  <div id="disqus_thread"></div>
+<script>
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+    var PAGE_URL = "https://help.sojs.repl.co/plea/{{ id }}"
+    var PAGE_IDENTIFIER = "{{ id }}"
+    var disqus_config = function () {
+    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = 'https://help-0.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">Comments by <u>Disqus</u></a></noscript>
+<script id="dsq-count-scr" src="//help-0.disqus.com/count.js" async></script>
+<footer class="container">
+    <p class="float-end"><a href="#">Back to top</a></p>
+    {% include "./footer.html" %}
+  </footer>
 </body>
 </html>

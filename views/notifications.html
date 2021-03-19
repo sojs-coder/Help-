@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js">
+
+	</script>
+
+	<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js">
+
+	</script>
+
+	<script>
+		// Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyCqqICGwZx5cheh2FRN2_emWDFmx1RzRE8",
+    authDomain: "help-38d77.firebaseapp.com",
+    projectId: "help-38d77",
+    storageBucket: "help-38d77.appspot.com",
+    messagingSenderId: "89380496627",
+    appId: "1:89380496627:web:770b5af07afa24535fc386",
+    measurementId: "G-50JHBCK55T"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+	</script>
+	<link rel="stylesheet" href="./css/tag-display.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="../css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="../js/bootstrap.bundle.min.js">
+
+	</script>
+	<link rel="stylesheet" href="../css/home.css">
+  <link rel="stylesheet" href="./css/cards.css">
+  <link rel = "stylesheet" href = "./css/dark-theme.css">
+
+
+	<title>Notifications - Help!</title>
+
+	<style>
+		.bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		}
+
+		@media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			}
+		}
+	</style>
+
+</head>
+
+<body>
+	{% include "./header.html" %}
+
+
+<main style = "margin: 20px;">
+  
+<script src = "./js/notif.js">
+  </script>
+
+  <a class = "btn btn-primary" style = "float:right;" href="/new">+ New</a>
+  <h1>Notifications</h1>
+  <div class = "container-fluid">
+  <div class = "row">
+  {% for notif in notifications %}
+  {% if notif.notunread %}
+  <div class="card-body cards" >
+    <h5 class="card-title">{{ notif.title }} <span class = "text-muted">
+      <script>
+        var diference;
+        var diff = timeDifference(now, {{ notif.timestamp }});
+        if(diff.years >= 3){
+          document.write(diff.years + " years ago");
+        }else if(diff.years >= 1){
+          document.write(diff.years + " years, " + diff.days+ " days ago");
+        }else if(diff.days >= 1){
+          document.write(diff.days + " days, "+ diff.hours + " hours ago");
+        }else if(diff.hours >= 1){
+          document.write(diff.hours + " hours, "+ diff.minutes+ " minutes ago");
+        }else if(diff.minutes >= 1){
+          document.write(diff.minutes + " minutes, "+diff.seconds+ " seconds ago")
+        }else{
+          document.write(diff.seconds + " seconds ago")
+        }
+        
+      </script>
+
+      </span></h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{ notif.subtitle }}</h6>
+    <p class="card-text">{{ notif.body }}</p>
+    <div class = "btn-group" role = "group">
+    <a href="{{ notif.buttonLink }}" class="btn btn-secondary">{{ notif.buttonTitle }}</a>
+    <button class = "btn btn-secondary" disabled>Marked As Read</button>
+    </div>
+    </div>
+    <hr>
+    {% else %}
+    <div class="card-body cards unread" style = "margin: 6px;" id = "notif{{ loop.index0 }}">
+    <h5 class="card-title"><span class = "title">{{ notif.title }}</span><span class = "text-muted">
+      <script>
+        var diference;
+        var diff = timeDifference(now, {{ notif.timestamp }});
+        if(diff.years >= 3){
+          document.write(diff.years + " years ago");
+        }else if(diff.years >= 1){
+          document.write(diff.years + " years, " + diff.days+ " days ago");
+        }else if(diff.days >= 1){
+          document.write(diff.days + " days, "+ diff.hours + " hours ago");
+        }else if(diff.hours >= 1){
+          document.write(diff.hours + " hours, "+ diff.minutes+ " minutes ago");
+        }else if(diff.minutes >= 1){
+          document.write(diff.minutes + " minutes, "+diff.seconds+ " seconds ago")
+        }else{
+          document.write("<span class = 'timestamp'>"+ diff.seconds + " seconds ago</span>")
+        }
+        
+      </script>
+
+      </span></h5>
+    <h6 class="card-subtitle mb-2 text-muted subtitle">{{ notif.subtitle }}</h6>
+    <p class="card-text"><span class = "text">{{ notif.body }}</span></p>
+    <div class = "btn-group">
+    <a href="{{ notif.buttonLink }}" class="btn btn-primary link" id = "link{{ loop.index0 }}">{{ notif.buttonTitle }}</a>
+    <button class = "btn btn-primary" onclick = "read('{{ loop.index0 }}')">Mark As Read</button>
+    </div>
+    
+    </div>
+    {% endif %}
+    {% endfor %}
+  <footer class="container">
+    <p class="float-end"><a href="#">Back to top</a></p>
+    {% include "./footer.html" %}
+  </footer>
+</main>
+<script>
+var links = document.querySelectorAll("a.link");
+links.forEach((d)=>{
+  d.onclick = (e)=>{
+    e.preventDefault();
+    var href = d.href;
+    var id = d.id;
+    var notif = id.split('link');
+    notif = notif.join("");
+    read(notif, true);
+    if(href.indexOf('help.sojs.repl') !== -1){ 
+      
+      window.location.href = href;
+    }else{
+      var win = window.open(href, '_blank');
+      location.reload();
+      win.focus();
+    }
+  }
+})
+</script>
+</body>
+</html>

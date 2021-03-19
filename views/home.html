@@ -2,16 +2,18 @@
 <html lang="en">
 
 <head>
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
-<!-- The core Firebase JS SDK is always required and must be listed first -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js"></script>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-app.js">
+	</script>
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
+	<!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
-<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.5/firebase-analytics.js">
+	</script>
 
-<script>
-  // Your web app's Firebase configuration
+	<script>
+		// Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   var firebaseConfig = {
     apiKey: "AIzaSyCqqICGwZx5cheh2FRN2_emWDFmx1RzRE8",
@@ -25,17 +27,15 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
-</script>
+
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="">
-	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+	<meta name="description" content="Help is an online platform to find help for all of your coding projects, without needing to ask the akward question - 'I need help, can you help me?'">
+	<meta name="author" content="SoJS">
 	<meta name="generator" content="Hugo 0.79.0">
 	<title>Help!</title>
-
-
-
-
+  <link href="./css/dark-theme.css" rel="stylesheet">
 	<!-- Bootstrap core CSS -->
 	<link href="./css/bootstrap.min.css" rel="stylesheet">
 
@@ -60,83 +60,68 @@
 	<link href="./css/carousel.css" rel="stylesheet">
 </head>
 
-<body>
+<body class = "bgdark">
 
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/home">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/signup">Sign Up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Log In</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link " href="/pleas">Posts</a>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
+	{% include "./header.html" %}
 
-<main>
+	<main >
 
-  <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
-    <ol class="carousel-indicators">
-      <li data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
-      <li data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
-      <li data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
-    </ol>
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+		<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+			<ol class="carousel-indicators">
+				<li data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
+				<li data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
+				<li data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
+        <li data-bs-target="#myCarousel" data-bs-slide-to="3"></li>
+			</ol>
+			<div class="carousel-inner">
+        <div class="carousel-item active">
+					<img class="bd-placeholder-img" width="100%" height="100%"  aria-hidden="true" src = "./imgs/cover.png"
+					 focusable="false"  style = "object-fit: cover">
+				</div>
+				<div class="carousel-item">
+					<img class="bd-placeholder-img" width="100%" height="100%"  aria-hidden="true" src = "./imgs/help_pic.jpg"
+					 focusable="false" style = "object-fit: cover">
+						
 
-        <div class="container">
-          <div class="carousel-caption text-start">
-            <h1>Help Others.</h1>
-            <p>Ever have coders block? Ever feel that your not good enough to code something. Never fear! With Help! you can find people to help you, and find projects to work on with other people!</p>
-            <p><a class="btn btn-lg btn-primary" href="/signup" role="button">Sign up today</a></p>
-          </div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+					<div class="container">
+						<div class="carousel-caption text-start">
+							<h1>Help Others.</h1>
+							<p>Ever have coders block? Ever desparetly need help for codeing your project? Never fear, Help! is here! Help is
+								an online tool to find help, and to help, without extra clicks or hassle.</p>
+							<p><a class="btn btn-lg btn-primary" href="/signup" role="button">Sign up today</a></p>
+						</div>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<img class="bd-placeholder-img" width="100%" height="100%"  aria-hidden="true" src = "./imgs/help_heading_comment.jpg"
+					 focusable="false"  style = "object-fit: cover">
 
-        <div class="container">
-          <div class="carousel-caption">
-            <h1>Cutting-Edge Tech</h1>
-            <p>Help! allows you to comment on posts, so you can tell other viewers more about the project, and maybe suggest things. It also allows people to view a list of current contributers, so you know who your working with!</p>
-            <p><a class="btn btn-lg btn-primary" href="/blog/features" role="button">Learn more</a></p>
-          </div>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+					<div class="container">
+						<div class="carousel-caption">
+							<h1>Cutting-Edge Tech</h1>
+							<p>After you have posted your project, other people can comment on it, giving you their advice and suggestions, without
+								becomming full-on developers.</p>
+							<p><a class="btn btn-lg btn-primary" href="/plea/-MUjQcKtB1AAIVy_XRfL" role="button">Learn more</a></p>
+						</div>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<img class="bd-placeholder-img" width="100%" height="100%"  aria-hidden="true" src = "./imgs/bootstrap.jpg"
+					 focusable="false"  style = "object-fit: cover">
 
-        <div class="container">
-          <div class="carousel-caption text-end">
-            <h1>Stunning & Responsive UI</h1>
-            <p>With new stunning looks with help from <a style = "color: aliceblue;"href= "https://getbootstrap.com/">BS4</a>, you can find what you want quickly and easily. </p>
-            <p><a class="btn btn-lg btn-primary" href="/blog/features" role="button">Learn more</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<div class="container">
+						<div class="carousel-caption text-end">
+							<h1>Stunning & Responsive UI</h1>
+							<p>With new stunning looks with help from <a style="color: aliceblue;" href="https://getbootstrap.com/">BS4</a>, you
+								can find what you want quickly and easily. </p>
+							<p><a class="btn btn-lg btn-primary" href="/search?q=python+pygame+repl" role="button">Search For a plea</a></p>
+						</div>
+					</div>
+				</div>
+        
+			</div>
+			<a class="carousel-control-prev" href="#myCarousel" role="button" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="visually-hidden">Previous</span>
     </a>
     <a class="carousel-control-next" href="#myCarousel" role="button" data-bs-slide="next">
@@ -150,8 +135,8 @@
 
     <div class="row featurette">
       <div class="col-md-7">
-        <h2 class="featurette-heading">Help Others</h2>
-        <p class="lead">Every day I come up with a new idea. I think "oooh lets code that". Then I come across a problem. To do that I need a full on developmet team. Where do you get it? Where do you advertise "Come work on this with me- it'll be fun?". The answer is: Here. You can describe your project and people can volunteer to help you with it. Just remember to often check you notifications often.</p>
+        <h2 class="featurette-heading">Help Others <span class = "text-muted"> Without extra clicks and hassle</span></h2>
+        <p class="lead">Stackoverflow, repl talk, github, discord, and assorted coding blogs are all well and good. They answer your questions. They help you out. But they do not provide developer who will actually help you. They just answer your questions. Help is designed to let you find people who are interested in assisting you in your project. Too many times I've had to quit, becuase the sheer quantity of code is just too much for one person. Not anymore. <a href = "https://help.sojs.repl.co/plea/-MUjQcKtB1AAIVy_XRfL" class = "btn btn-primary">What is Help?</a></p>
       </div>
       <div class="col-md-5">
         <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Help others" preserveAspectRatio="xMidYMid slice" focusable="false" src="./imgs/helpclipart.png" title="Help Others"/>
@@ -163,8 +148,8 @@
 
     <div class="row featurette">
       <div class="col-md-7 order-md-2">
-        <h2 class="featurette-heading">Find things easily. <span class="text-muted"> Just Click "Search" (In Dev)</span></h2>
-        <p class="lead">Lets say that you are interested in creating a chat room by the likes of discord. Instead of scrolling through endless pleas for help, simply look at the top right corner of the screen, type your query, and tap "search". Immediatly filter through hundreds of requests and find just the ones you want.</p>
+        <h2 class="featurette-heading">Find things easily. <span class="text-muted"> Just Click "Search"</span></h2>
+        <p class="lead">A long time ago, google did not exist. Yes. You heard me. Niether did bing, Yahoo search, or anything closely resemling a search engine. You had to directy type in a URL directly into the URL bar. Now, people can search for anything, from <a href = "/search?q=cat+vidoes">"cat videos"</a> to <a href = "/search?q=nerds+association">"nerds association"</a>. All you need to do is either <a href= "/search">click here</a> or "search pleas"</p>
       </div>
       <div class="col-md-5 order-md-1">
         <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false" title="search easily" src = "./imgs/search.png"/>
@@ -176,14 +161,28 @@
 
     <div class="row featurette">
       <div class="col-md-7">
-        <h2 class="featurette-heading">How About Smaller Projects? <span class="text-muted"> No Problem. (in dev)</span></h2>
-        <p class="lead">What if your project only needs one or two people? In that case, when you post a request, add a "people limit". This way, when you have all the help you want, the post deletes itself. No extra clicks or hassle needed.</p>
+        <h2 class="featurette-heading">WISYWIG Description <sup class = "bg-warning text-dark">New!</sup><span class="text-muted"> Stunning.</span></h2>
+        <p class="lead">Imaging this: clicking the "new" button, and being greeted with an amazing WISYWIG editor powered by <a href= "https://kothing.github.io/editor/index.html">kothing</a>. None of the ugly markdown formatting, but a clean, beautiful text editor, displaying excatly what you want, and what you are going to get. No second guessing yourself "Aren't I supposed to put a space there?"</p>
       </div>
       <div class="col-md-5">
-        <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false" title="Any size projects" src = "./imgs/project.jpg"/>
+        <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false" title="A powerful WISYWIG editor" src = "./imgs/kothing.png"/>
+
+      </div>
+    </div>   
+
+    <hr class="featurette-divider">
+    <div class="row featurette">
+      <div class="col-md-7 order-md-2">
+        <h2 class = "featurette-heading">Post Comments <sup   class = "bg-warning text-dark">New!</sup><span class="text-muted"> How Fancy.</span></h2>
+        <p class="lead">There used to be a time, way back in the internets beginings, that having any sort of conversation on a website was impossible. That is a thing of the past. Now, with comments powered by <a href= "https://disqus.com/">Disqus</a>, that dream has become reality. Use Disqus to check with people to make sure you <i>really</i> want them helping you, or provide advice or suggestions.</p>
+      </div>
+      <div class="col-md-5 order-md-1">
+        <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false" title="Comments Powered by Disqus" src = "./imgs/comment.png"/>
 
       </div>
     </div>
+
+
 
     <hr class="featurette-divider">
 
@@ -195,13 +194,13 @@
   <!-- FOOTER -->
   <footer class="container">
     <p class="float-end"><a href="#">Back to top</a></p>
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
+    {% include "./footer.html" %}
   </footer>
-</main>
+
 
 
     <script src="./js/bootstrap.bundle.min.js"></script>
 
       
-  </body>
+  </main></body>
 </html>

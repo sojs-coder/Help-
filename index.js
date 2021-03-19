@@ -27,46 +27,26 @@ admin.initializeApp({
   databaseURL: "https://help-38d77-default-rtdb.firebaseio.com/"
 });
 
-// APP.USE();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    parameterLimit: 100000,
-    limit: '50mb',
-    extended: true
-  }));
-app.use(upload.array());
-app.use(cookieParser());
-app.use(session({ secret: process.env.SECRET }))
-app.engine('html', swig.renderFile);
-app.set('view engine', 'html');
-app.set('views', __dirname + '/views');
-app.use(morgan('dev'))
-app.use(ex.static('views'));
-app.set('view cache', false)
-app.use((req,res,next)=>{
-  req.getUrlParameter = function getUrlParameter(sParam) {
-    var sPageURL = req.url.split('?')[1],
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-        }
-    }
-    return false;
-  };
-  return next();
-})
-
-var db = admin.database();
-var ref = db.ref("pleas");
-var users = db.ref('users');
 //Helpers
+
+function createNotification(target, notif) {
+  users.once('value', (snap) => {
+    var timestamp = new Date().getTime()
+    snap = snap.val();
+    if (snap[target]) {
+      var completeNotification = notif;
+      completeNotification["timestamp"] = timestamp;
+      var all_notifs = snap[target].notifications;
+      all_notifs[all_notifs.length] = completeNotification
+      var userRef = users.child(target);
+      userRef.update({
+        "notifications": all_notifs
+      });
+    } else {
+      return;
+    }
+  })
+}
 function search(tags, cb) {
   ref.once('value', (snap) => {
     snap = snap.val();
@@ -79,14 +59,14 @@ function search(tags, cb) {
           snap[i].matches++;
         }
       }
-      if (snap[i].matches == 0){
+      if (snap[i].matches == 0) {
         snap[i].notrelevant = true;
-      }else{
+      } else {
         snap[i].notrelevant = false;
       }
-      snap[i].shortDes = truncate(snap[i].des, 150, true);
+      snap[i].shortDes = truncate(snap[i].des, 100, true);
     }
-    
+
     snap.sort((a, b) => {
       if (a.matches < b.matches) {
         return 1;
@@ -98,22 +78,27 @@ function search(tags, cb) {
     cb(snap);
   })
 }
-function getLocals(req) {
-  return users.once('value', (snap) => {
+
+function getLocals(req, cb) {
+  users.once('value', (snap) => {
     if (snap) {
       snap = snap.val();
       var userData = (snap[req.session.username]) ? snap[req.session.username] : undefined;
-      return {
+      if (userData) {
+        userData.notifications = userData.notifications.reverse();
+        userData.notifications = userData.notifications.splice(0, 3);
+      }
+      cb({
         notSignedIn: (req.session.signedIn) ? false : true,
         username: (userData) ? userData.username : false,
-        notifcations: (userData) ? userData.notifcations : false
-      }
+        notifications: (userData) ? userData.notifications : false
+      })
     } else {
-      return {
+      cb({
         notSignedIn: true,
         username: false,
-        notifcations: false
-      }
+        notifications: false
+      })
     }
   })
 
@@ -138,10 +123,10 @@ function json2array(json) {
 }
 function filterIt(arr, searchKey) {
   var results = [];
-  if(!Array.isArray(searchKey)){
+  if (!Array.isArray(searchKey)) {
     searchKey = [searchKey];
   }
-  for (var i in searchKey){
+  for (var i in searchKey) {
     results.push(arr.filter(obj => Object.keys(obj).some(key => obj[key].includes(searchKey[i]))));
   }
   return results;
@@ -149,39 +134,120 @@ function filterIt(arr, searchKey) {
 
 
 
-//app.get();
+// APP.USE();
 
-app.get('/', (req, res) => {
-  res.redirect('/home');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  parameterLimit: 100000,
+  limit: '50mb',
+  extended: true
+}));
+app.use(upload.array());
+app.use(cookieParser());
+app.use(session({ secret: process.env.SECRET }))
+app.engine('html', swig.renderFile);
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
+app.use(morgan('dev'))
+app.use(ex.static('views'));
+app.use(ex.json())
+app.set('view cache', false);
+app.use((req, res, next) => {
+  req.getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = req.url.split('?')[1]
+    if (sPageURL) {
+      var sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+      for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+          return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+      }
+    }
+    return false;
+  };
+  return next();
 });
+function notification(plea, req) {
+  var username = req.session.username;
+  ref.once('value', (snap) => {
+    snap = snap.val();
+    if (snap[plea]) {
+      var author = snap[plea].author;
+      users.once('value', (usersnap) => {
+        usersnap = usersnap.val();
+        createNotification(author, {
+          title: username + ' Wants to help!',
+          subtitle: snap[plea].title,
+          body: username + ' wants to helps you on ' + snap[plea].title,
+          buttonTitle: 'Accept',
+          buttonLink: '/accept?username=' + username + '&plea=' + plea, "read": false
+        })
+      })
+    }
+  })
+}
 
-app.get('/auth', (req, res) => {
-  res.render('auth', {});
-})
-app.get('/home', (req, res) => {
+var db = admin.database();
+var ref = db.ref("pleas");
+var users = db.ref('users');
+
+
+//app.get();
+app.get('/', (req, res) => {
   if (!req.session.signedIn) {
-    res.render('home', getLocals(req));
+    getLocals(req, (json) => {
+      res.render('home', json)
+    })
+
   } else {
     res.redirect('/~')
   }
 });
+app.get('/home', (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/auth', (req, res) => {
+  res.render('auth', {});
+});
+
 app.get('/signup', (req, res) => {
   if (!req.session.signedIn) {
-    res.render('signup', getLocals(req));
+    getLocals(req, (json) => {
+      res.render('signup', json)
+    })
   } else {
     res.redirect('/~');
   }
 });
 app.get('/login', (req, res) => {
   if (!req.session.signedIn) {
-    res.render('login', getLocals(req));
+    getLocals(req, (json) => {
+      if (req.getUrlParameter('goto')) {
+        req.session.goto = req.getUrlParameter('goto');
+      } else {
+        req.session.goto = undefined;
+      }
+      res.render('login', json);
+    })
   } else {
     res.redirect('/~');
   }
 });
 app.get('/~', (req, res) => {
   if (req.session.signedIn) {
-    res.render('page', getLocals(req));
+    getLocals(req, (json) => {
+      json.notifications = json.notifications.map((d) => {
+        d.notunread = (d.read) ? true : false;
+        return d;
+      })
+      res.render('page', json)
+    })
   } else {
     res.redirect('/login');
   }
@@ -194,7 +260,9 @@ app.get('/new', (req, res) => {
     if (req.session.signedIn) {
       var userData = snap[req.session.username];
       if (userData.identified || req.session.identified) {
-        res.render('new', getLocals(req));
+        getLocals(req, (json) => {
+          res.render('new', json)
+        })
       } else {
 
         res.redirect('/authenticate')
@@ -217,12 +285,14 @@ app.get('/authenticate', (req, res) => {
         if (req.get('X-Replit-User-Id')) {
           userRef = db.ref('users/' + userData.username);
           userRef.update({
-            "identified": true
+            "identified": req.get('X-Replit-User-Name')
           });
 
           res.redirect('/new');
         } else {
-          res.render('replauth', getLocals(req));
+          getLocals(req, (json) => {
+            res.render('replauth', json)
+          })
         }
       } else {
         res.redirect('/new');
@@ -239,43 +309,49 @@ app.get('/logout', (req, res) => {
 })
 app.get('/plea/:pleaID', (req, res) => {
   var pleaID = req.params['pleaID'];
-  ref.on('value', (snapshot) => {
+  ref.once('value', (snapshot) => {
     var snapshot = snapshot.val();
     var plea = snapshot[pleaID];
-
+    var userData, loggedIn, notOwner;
     if (plea) {
       if (req.session.signedIn) {
         users.once('value', (snap) => {
           snap = snap.val();
           userData = snap[req.session.username]
-          var alreadyJoined = (plea.users.indexOf(userData.username) !== -1) ? true : false;
-          var notowner = (plea.author == userData.username) ? false : true
+          alreadyJoined = (plea.users.indexOf(userData.username) !== -1) ? true : false;
+          notowner = (plea.author == userData.username) ? false : true
+          res.render('plea', {
+            "author": plea.author,
+            "title": plea.title,
+            "des": plea.des,
+            "id": pleaID,
+            "users": plea.users,
+            "tags": plea.tags,
+            "owner": notowner,
+            "username": req.session.username,
+            "joined": alreadyJoined
+          });
         })
       } else {
-        var loggedIn = false;
-        var notowner = true;
-        var alreadyJoined = false;
+        res.render('plea', {
+          "author": plea.author,
+          "title": plea.title,
+          "des": plea.des,
+          "id": pleaID,
+          "users": plea.users,
+          "tags": plea.tags,
+          "owner": true,
+          "username": false,
+          "joined": false
+        });
       }
-      res.render('plea', {
-        "author": plea.author,
-        "title": plea.title,
-        "des": plea.des,
-        "id": pleaID,
-        "users": plea.users,
-        "tags": plea.tags,
-        "owner": notowner,
-        "username": (req.session.signedIn) ? req.session.username : false,
-        "joined": (alreadyJoined)
-      });
+
     } else {
       res.redirect('/pleas');
     }
   })
 })
-app.get('/joined/:pleaID', (req, res) => {
-  var id = req.params["pleaID"];
-  res.end('Thanks for joining plea with id of: ' + id);
-});
+
 app.get('/pleas', (req, res) => {
   var pleas = [];
   var userData = undefined;
@@ -291,7 +367,7 @@ app.get('/pleas', (req, res) => {
       pleas = pleas.reverse();
       var newPleas = pleas.map((element) => {
         var newElement = element;
-        newElement.shortDes = truncate(element.des, 150, true);
+        newElement.shortDes = truncate(element.des, 100, true);
         return newElement
       })
 
@@ -313,49 +389,169 @@ app.get('/pleas', (req, res) => {
 
 });
 app.get('/edit/:pleaID', (req, res) => {
-  if (req.session.signedIn) {
-    res.render('edit', {
-      username: req.session.username,
 
+  if (req.session.signedIn) {
+    ref.once('value', (snap) => {
+      var pleaRef = ref.child(req.params['pleaID']);
+      var key = pleaRef.key;
+      snap = snap.val();
+      plea = snap[req.params['pleaID']];
+      plea['id'] = key;
+      plea["tags"] = plea["tags"].join(', ');
+      res.render('edit', {
+        username: req.session.username,
+        plea: plea
+      })
     })
+
   } else {
     res.redirect('/plea/' + req.params["pleaID"])
   }
 });
-app.get('/search',(req,res)=>{
-  if(req.url.indexOf('?') !== -1){
-  var tags = req.getUrlParameter('q');
-  tags = tags.split('+');
-  var results = search(tags,(newOrder)=>{
-      res.render('search',{newOrder: newOrder, username: req.session.username, noresults: false});
-  })
-  }else{
-      res.render('search',{noresults: true, username: req.session.username});
+app.get('/search', (req, res) => {
+  if (req.url.indexOf('?') !== -1) {
+    var tags = req.getUrlParameter('q');
+    tags = tags.split('+');
+    var results = search(tags, (newOrder) => {
+      res.render('search', { newOrder: newOrder, username: req.session.username, noresults: false });
+    })
+  } else {
+    res.render('search', { noresults: true, username: req.session.username });
   }
 });
+app.get('/notifications', (req, res) => {
 
+  users.once('value', (snap) => {
+    snap = snap.val();
+    if (req.session.username) {
+      if (snap[req.session.username]) {
+        var notifications = snap[req.session.username].notifications;
+        notifications = notifications.map((data) => {
+          data.notunread = (data.read) ? true : false;
+          return data;
+        })
+        notifications = notifications.reverse();
+        var locals = {
+          username: req.session.username,
+          notifications: notifications
+        }
+        res.render('notifications', locals)
+      } else {
+        res.redirect('/signup')
+      }
+    } else {
+      res.redirect('/login?goto=notifications')
+    }
+  })
+})
+app.get('/accept', (req, res) => {
+  if (req.session.username) {
+    var username = req.getUrlParameter("username");
+    var plea = req.getUrlParameter('plea');
+    ref.once('value', (snap) => {
+      snap = snap.val();
+      var pleaRef = snap[plea];
+      if (pleaRef) {
+        if (pleaRef.author == req.session.username) {
+          var replLink = pleaRef.link;
+          var notification = {
+            "title": req.session.username + " accepted your help",
+            "subtitle": pleaRef.title,
+            "body": req.session.username + " has accepted your help on " + pleaRef.title,
+            "buttonLink": replLink,
+            "buttonTitle": "Go to Repl"
+          }
+          createNotification(username, notification)
+          var locals = {
+            username: req.session.username,
+            message: "Success!",
+            accepted: username,
+            pleaTitle: pleaRef.title
+          }
+          res.render('accepted', locals);
+        } else {
+          var locals = {
+            username: req.session.username,
+            message: "Not Allowed!",
+            accepted: false,
+            pleaTitle: false,
+            errorText: "You do not own that plea!",
+            success: false
+          }
+          res.render("accepted", locals);
+        }
+
+      } else {
+        var locals = {
+          username: req.session.username,
+          message: "Does Not Exist!",
+          accepted: false,
+          pleaTitle: false,
+          errorText: "The plea specified does not exist"
+        }
+        res.render('')
+      }
+    })
+  } else {
+    res.redirect('/login')
+  }
+});
+app.get('/site/privacy', (req, res) => {
+  getLocals(req, (json) => {
+    if (req.getUrlParameter('embed') == "true") {
+      if (req.getUrlParameter('dark') == "true") {
+        json['dark'] = true;
+        res.render('privacyembed', json);
+        
+      } else {
+        res.render('privacyembed', json);
+      }
+
+    } else {
+      res.render('privacypolicy', json);
+    }
+  })
+});
+app.get('/site/terms', (req, res) => {
+  getLocals(req, (json) => {
+    if (req.getUrlParameter('embed') == "true") {
+      if (req.getUrlParameter('dark') == "true") {
+        json['dark'] = true;
+        res.render('tosembed', json);
+        
+      } else {
+        res.render('tosembed', json);
+      }
+
+    } else {
+      res.render('tos', json);
+    }
+  })
+});
+app.get('/contact', (req, res) => {
+  getLocals(req, (json) => {
+    res.render('contact', json);
+  })
+})
 // app.post();
 app.post('/join/:pleaID', (req, res) => {
-  var userData = undefined;
+  var userData;
   if (req.session.signedIn) {
     users.once('value', (snap) => {
       snap = snap.val();
-      userData = snap[req.session.username]
-    })
-  }
-  if (req.session.signedIn) {
-    var pleaID = req.params['pleaID'];
-    ref.once('value', (snapshot) => {
-      var snap = snapshot.val();
-      var plea = snap[pleaID];
-      plea.users[plea.users.length] = userData.username;
-      var pleaRef = ref.child(pleaID);
-      pleaRef.update(plea);
-      var username = userData.username;
-      // notifcation(pleaID,req.session.username);
-      res.redirect('/joined/' + pleaID);
-
-    })
+      userData = snap[req.session.username];
+      var pleaID = req.params['pleaID'];
+      ref.once('value', (snapshot) => {
+        var snap = snapshot.val();
+        var plea = snap[pleaID];
+        plea.users[plea.users.length] = userData.username;
+        var pleaRef = ref.child(pleaID);
+        pleaRef.update(plea);
+        var username = userData.username;
+        notification(pleaID, req);
+        res.redirect('/plea/' + pleaID);
+      })
+    });
   } else {
     res.redirect('/login?goto=joined/' + req.params['pleaID']);
   }
@@ -366,25 +562,34 @@ app.post('/signup', (req, res) => {
   var email = req.body.email;
 
   users.once('value', (snap) => {
+    snap = snap.val();
     if (snap[username]) {
-      res.redirect('/login?exists=true');
+      res.redirect('/signup?exists=true');
     } else {
-
+      var now = new Date();
+      var timestamp = now.getTime();
       var data = {
         username: username,
         email: email,
-        notifcations: [{ title: "Welcome!", body: "Welcome to Help!", buttonLink: "/", buttonTitle: "Go Home" }],
+        notifications: [{ title: "Welcome!", body: "Welcome to Help!", buttonLink: "/", buttonTitle: "Go Home", "subtitle": "Help!", "timestamp": timestamp }, {
+          "body": "View Help's Github profile",
+          "buttonLink": "https://github.com/sojs-coder/Help-",
+          "subTitle": "Help Info",
+          "buttonTitle": "Go!",
+          "title": "Help On Github", "timestamp": timestamp
+        }],
         passwordHash: password, identified: false
       }
 
       users.child(username).set(data);
+      req.session.username = username;
+      req.session.signedIn = username;
+      res.redirect('/~');
 
 
     }
   })
-  req.session.username = username;
-  req.session.signedIn = username;
-  res.redirect('/~');
+  
 });
 app.post('/login', (req, res) => {
 
@@ -397,11 +602,23 @@ app.post('/login', (req, res) => {
     users.once("value", (d) => {
       d = d.val();
       d = d[username];
-      d = (d.passwordHash == password);
+
       if (d) {
-        req.session.signedIn = username;
-        req.session.username = username;
-        res.redirect('/~')
+        d = (d.passwordHash == password);
+        if (d) {
+          req.session.signedIn = username;
+          req.session.username = username;
+          if (req.session.goto) {
+            var goto = req.session.goto;
+            delete req.session.goto;
+            res.redirect(goto);
+          } else {
+            res.redirect('/~')
+          }
+        } else {
+          res.redirect('/login?doesnotmatch=true');
+        }
+
       } else {
         res.redirect('/login?doesnotmatch=true');
       }
@@ -428,7 +645,60 @@ app.post('/new', (req, res) => {
   }
 
 });
+app.post('/edit/:pleaID', (req, res) => {
+  if (req.session.signedIn) {
+    var title = req.body.title;
+    var des = req.body["des-content"];
+    var author = req.session.username;
+    var link = req.body.link;
+    var tags = req.body.tags;
+    tags = tags.split(',');
+    title = filter.clean(title);
+    des = filter.clean(des);
+    var pleaRef = ref.child(req.params['pleaID'])
+    pleaRef.update({
+      title: title, des: des, author: author, users: [author], username: req.session.username, link: link, tags: tags
+    });
+    res.redirect('/plea/' + pleaRef.key);
+  } else {
+    res.redirect('/login')
+  }
+});
+app.post('/readNotification', (req, res) => {
+  var data = req.body;
+  var notifID = data.notification;
+  notifID = notifID.split('notif').join("")
+  notifID = parseInt(notifID);
+  users.once('value', (snap) => {
+    snap = snap.val();
+    usersnap = snap[req.session.username];
+    var notifs = usersnap['notifications'];
+    notifs = notifs.reverse();
+    notifs[notifID].read = true;
+    notifs = notifs.reverse();
+    userRef = users.child(req.session.username);
+    userRef.update({
+      "notifications": notifs
+    });
 
+  })
+  res.send({ "notifID": notifID });
+});
+
+// 404
+app.get('/404', (req, res) => {
+  getLocals(req, (json) => {
+    res.status(404)
+    res.render('404', json);
+  })
+})
+app.use((req, res, next) => {
+
+  res.status(404)
+  res.redirect('/404?url=' + req.url);
+
+
+});
 // app.listen();
 http.listen(3000, () => {
   console.log('listening on port:3000');

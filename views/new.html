@@ -48,6 +48,7 @@
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/codemirror@5.49.0/lib/codemirror.min.css"
 />
+<link rel="stylesheet" href="./css/light-theme.css"/>
 
 <link
       rel="stylesheet"
@@ -83,38 +84,10 @@
 
 <body>
 
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<div class="container-fluid">
-				<a class="navbar-brand" href="#">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/~">Home</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="/pleas" aria-current="page" >Posts</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout" aria-disabled="true">Logout</a>
-          </li>
-          <li class = "nav-item">
-            <span class = "nav-link active">Logged in as: {{ username }}
-          </li>
-        </ul>
+	{% include "./header.html" %}
 
-        <form class="d-flex">
-          <a class = "btn btn-primary" href="/new">+ New</a>
-        </form>
-      </div>
-    </div>
-  </nav>
-</header>
 
-<div class="container">
+<div class="container" style = "margin-top: 3em;">
   <main>
     <div class="py-5 text-center">
       <h2>New Plea</h2>
@@ -171,7 +144,7 @@
   </main>
 
   <footer class="container">
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
+    {% include "./footer.html" %}
   </footer>
 </div>
 
