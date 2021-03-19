@@ -466,7 +466,8 @@ app.get('/accept', (req, res) => {
             username: req.session.username,
             message: "Success!",
             accepted: username,
-            pleaTitle: pleaRef.title
+            pleaTitle: pleaRef.title,
+
           }
           res.render('accepted', locals);
         } else {
@@ -476,7 +477,7 @@ app.get('/accept', (req, res) => {
             accepted: false,
             pleaTitle: false,
             errorText: "You do not own that plea!",
-            success: false
+            success: true
           }
           res.render("accepted", locals);
         }
@@ -487,9 +488,10 @@ app.get('/accept', (req, res) => {
           message: "Does Not Exist!",
           accepted: false,
           pleaTitle: false,
-          errorText: "The plea specified does not exist"
+          errorText: "The plea specified does not exist",
+          success: true
         }
-        res.render('')
+        res.render('accepted',locals)
       }
     })
   } else {

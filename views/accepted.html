@@ -28,15 +28,13 @@
   firebase.analytics();
 
 	</script>
-	<link rel="stylesheet" href="./css/tag-display.css">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="../css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<script src="../js/bootstrap.bundle.min.js">
 	</script>
 	<link rel="stylesheet" href="../css/home.css">
-	<link rel="stylesheet" href="./css/pleas-search.css">
-
+	<link rel="stylesheet" href="../css/light-theme.css">
 	
 	<title>Help! - Accept</title>
 
@@ -62,14 +60,13 @@
 <main style = "margin: 20px;">
   <div class = "text-center"><h1 class = "display-3">{{ message }}</h1>
   {% if success %}
-  <p class = "text-muted">{{ errorText }}</p>
+    <p class = "text-muted">{{ errorText }}</p>
   {% else %}
-  <p class = "text-muted">You have succesfully accepted <i>{{ accepted }}</i> help you work on <i>{{ pleaTitle }}</i>. He should join you on your repl soon.</p>
+    <p class = "text-muted">You have succesfully accepted <i>{{ accepted }}</i> help you work on <i>{{ pleaTitle }}</i>. He should join you on your repl soon.</p>
   {% endif %}
   </div>
   <footer class="container">
     {% include "./footer.html" %}
-    <p>&copy; 2021 SoJS &middot; <a href="/site/privacy">Privacy</a> &middot; <a href="/site/terms">Terms</a></p>
   </footer>
 </main>
 </body>
