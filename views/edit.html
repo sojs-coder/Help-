@@ -137,8 +137,13 @@
     });
 </script>
           <hr class="my-4">
-
           <button class="w-100 btn btn-primary btn-lg" id = "go">Update</button>
+          <script>
+            document.getElementById('go').addEventListener('click',(e)=>{
+              e.target.disabled=true;
+              e.target.innerHTML = 'Saving...'
+            })
+          </script>
         </form>
       </div>
     </div>
