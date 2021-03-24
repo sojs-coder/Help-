@@ -1,0 +1,14 @@
+.backbox{
+  width: 100%;
+  height: 100%;
+  background-color: #03030e;
+  opacity:0.50;
+  padding: 12;
+}
+.captioncontent {
+  opacity: 1;
+  padding: 10pt;
+}
+.captioncontent:nth-child(n){
+  opacity: 1 !important;
+}

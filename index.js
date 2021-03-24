@@ -1,4 +1,4 @@
-// Require statments
+/* Require statments */
 var ex = require('express'),
   swig = require('swig'), app = ex();
 const morgan = require('morgan');
@@ -16,19 +16,19 @@ var filter = new Filter({ placeHolder: '*' });
 
 const decrypt = crypto2.decrypt;
 const encrypt = crypto2.encrypt;
-// Fetch the service account key JSON file contents 
+/* Fetch the service account key JSON file contents */
 var serviceAccount = require('./serviceKey.json');
 serviceAccount = decrypt(serviceAccount)
 serviceAccount = JSON.parse(serviceAccount);
 
-// // Initialize the app with a service account, granting admin privileges
+/* Initialize the app with a service account, granting admin privileges */
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://help-f52dd-default-rtdb.firebaseio.com"
 });
 
-//Helpers
+/* Helpers */
 
 function createNotification(target, notif) {
   users.once('value', (snap) => {
@@ -106,7 +106,7 @@ function getLocals(req, cb) {
 }
 function truncate(str, n, useWordBoundary) {
   if (str.length <= n) { return str; }
-  const subString = str.substr(0, n - 1); // the original check
+  const subString = str.substr(0, n - 1); /* the original check */
   return (useWordBoundary
     ? subString.substr(0, subString.lastIndexOf(" "))
     : subString) + "...";
@@ -135,7 +135,7 @@ function filterIt(arr, searchKey) {
 
 
 
-// APP.USE();
+/*========= APP.USE();======== */
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -198,7 +198,7 @@ var ref = db.ref("pleas");
 var users = db.ref('users');
 
 
-//app.get();
+/*======app.get();======*/
 
 app.get('/', (req, res) => {
   if (!req.session.signedIn) {
@@ -537,7 +537,7 @@ app.get('/contact', (req, res) => {
     res.render('contact', json);
   })
 })
-// app.post();
+/*=====app.post();========*/
 app.post('/join/:pleaID', (req, res) => {
   var userData;
   if (req.session.signedIn) {
@@ -689,7 +689,7 @@ app.post('/readNotification', (req, res) => {
   res.send({ "notifID": notifID });
 });
 
-// 404
+/*====404======*/
 app.get('/404', (req, res) => {
   getLocals(req, (json) => {
     res.status(404)
@@ -703,7 +703,7 @@ app.use((req, res, next) => {
 
 
 });
-// app.listen();
+/*=====app.listen();======*/
 http.listen(3000, () => {
   console.log('listening on port:3000');
   console.log('Help! is online!')
