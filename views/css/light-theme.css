@@ -1,16 +1,13 @@
 a{
-  color: darkblue;
+  color: rgb(21, 21, 173);
   text-decoration: none !important;
+}
+a:hover{
+  color: rgb(21, 21, 173);
+  text-decoration: underline;
 }
 body{
   background-color: #f1f1f7 !important;
-}
-.btn-primary{
-  background-color: dodgerblue !important;
-  color: white !important;
-}
-.btn-primary:hover{
-  background-color: rgb(5, 102, 199) !important;
 }
 .headerdiv{
   background-color: #03030e !important;
@@ -30,8 +27,6 @@ input,.cards,.container,main,body,article,footer,iframe{
   border: none;
 
 }
-
-
 .bgdark{
   background-color: #03030e !important;
 }

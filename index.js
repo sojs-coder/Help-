@@ -61,9 +61,9 @@ function search(tags, cb) {
         }
       }
       if (snap[i].matches == 0) {
-        snap[i].notrelevant = true;
+        snap[i].relevant = false;
       } else {
-        snap[i].notrelevant = false;
+        snap[i].relevant = true;
       }
       snap[i].shortDes = truncate(snap[i].des, 100, true);
     }
@@ -76,7 +76,17 @@ function search(tags, cb) {
       }
       return 0;
     });
-    cb(snap);
+    var cleaned = snap.map((map)=>{
+      if(map.relevant){
+        return map;
+      }
+    });
+    if(!cleaned[0]){
+      cb(snap,false)
+    }else{
+      cb(snap,true);
+    }
+    
   })
 }
 
@@ -104,9 +114,11 @@ function getLocals(req, cb) {
   })
 
 }
-function truncate(str, n, useWordBoundary) {
+function truncate(str, n, useWordBoundary, filter) {
   if (str.length <= n) { return str; }
-  const subString = str.substr(0, n - 1); /* the original check */
+  var subString = str.substr(0, n - 1);
+  var regex = /<\/?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)\/?>/gi;
+  subString = subString.replace(regex,' ');
   return (useWordBoundary
     ? subString.substr(0, subString.lastIndexOf(" "))
     : subString) + "...";
@@ -414,8 +426,8 @@ app.get('/search', (req, res) => {
   if (req.url.indexOf('?') !== -1) {
     var tags = req.getUrlParameter('q');
     tags = tags.split('+');
-    var results = search(tags, (newOrder) => {
-      res.render('search', { newOrder: newOrder, username: req.session.username, noresults: false });
+    var results = search(tags, (newOrder, results) => {
+      res.render('search', { newOrder: newOrder, username: req.session.username, noresults: false, viables: results});
     })
   } else {
     res.render('search', { noresults: true, username: req.session.username });

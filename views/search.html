@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="./css/pleas-search.css">
   <link href="./css/dark-theme.css" rel="stylesheet">
 	
-	<title>Pleas - Help!</title>
+	<title>Search - Help!</title>
 
 	<style>
 		.bd-placeholder-img {
@@ -42,7 +42,7 @@
 
   
   {% if noresults %}
-  <div style = "text-align: center;  padding-bottom: 6px; position: fixed; top: 25%; bottom: 25%;left: 30%; right: 30%; width: 40%;height: 50%;"><h1 class = "display-3" >Pleas</h1><span class = "text-muted">Search for a plea</span>
+  <div style = "text-align: center;  padding-bottom: 6px; position: fixed; top: 25%; bottom: 25%;left: 30%; right: 30%; width: 40%;height: 50%;"><h1 class = "display-3" >Search</h1><span class = "text-muted">Search for a plea</span>
   <form action = "search" method = "GET" class = "form-inline">
     <div class="form-group mx-sm-3 mb-2">
     <input class="form-control" id="q" placeholder="Search"  name = "q">
@@ -52,7 +52,7 @@
   </div>
   </form>
   {% else %}
-  <div style = "text-align: center;  padding-bottom: 6px; width: 50%;position: relative; left: 25%; right: 25%;"><h1 class = "display-3" >Pleas</h1><span class = "text-muted">Search for a plea</span>
+  <div style = "text-align: center;  padding-bottom: 6px; width: 50%;position: relative; left: 25%; right: 25%;"><h1 class = "display-3" >Search</h1><span class = "text-muted">Search for a plea</span>
   <form action = "search" method = "GET" class = "form-inline">
     <div class="form-group mx-sm-3 mb-2">
     <input class="form-control" id="q" placeholder="Search"  name = "q">
@@ -64,8 +64,9 @@
   <div class = "container-fluid">
   <!-- Cards -->
   
-  
+  {% if viables %}
   {% for plea in newOrder %}
+    {% if plea.relevant %}
     <div class="card-body">
       
       <h5 class="card-title">{{ plea.title }}</h5>
@@ -83,11 +84,13 @@
       
       <a href="/plea/{{ plea.key }}" class="btn btn-primary">View</a>
       </div>
-      {% if plea.notrelevant %}
-      <div >This result may not be what you are looking for</div>
-      {% endif %}
       <hr>
+
+      {% endif %}
   {% endfor %}
+  {% else %}
+  <h2>No results. Please modify your search</h2>
+  {% endif %}
   </div>
   <footer class="container">
     <p class="float-end"><a href="#">Back to top</a></p>
