@@ -15,6 +15,7 @@ If you search (either at "/pleas" or "/search" - it does not matter, you will be
 3. one last with "HTML", and "front-end"
 The results that are not relevant 
 
+# Help is officially in Beta.
 
 #### What do you wish to do on help?
 - [help others](https://github.com/sojs-coder/Help-/wiki/If-you-wish-to-help)
