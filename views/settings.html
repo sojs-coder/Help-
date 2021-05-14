@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	{% include "./firebaseSDKs.html" %}
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link rel="stylesheet" href="/css/home.css">
+	<link rel="stylesheet" href="/css/dark-theme.css">
+  <link rel = "stylesheet" href = "/css/settings.css"/>
+	
+	<title>Account Settings - Help!</title>
+
+	<style>
+		.bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		}
+
+		@media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+{% include "./header.html" %}
+<main style = "margin: 3em;">
+  <div class="container">
+<div class="row gutters">
+	<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+		<div class="card h-100">
+			<div class="card-body">
+				<div class="account-settings">
+					<div class="user-profile">
+						<div class="user-avatar">
+							<img src="{{ pic }}" alt="{{ name }}">
+              <figcaption><a href = "http://en.gravatar.com/emails">Change</a></figcaption>
+						</div>
+						<h5 class="user-name">{{ name }}</h5>
+						<h6 class="user-email">{{ email }}</h6>
+					</div>
+					<div class="about">
+            {% if site %}<div class = "text-muted"><a href = "{{ site }}">{{ site }}</a></div>{% endif %}
+						<h5 class="mb-2 text-primary">About</h5>
+						<p>{{ bio }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  
+	<div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+    <form action = "/@{{ username }}/settings" method = "POST">
+		<div class="card h-100">
+			<div class="card-body">
+				<div class="row gutters">
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+						<h6 class="mb-3 text-primary">Personal Details</h6>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label for="fullName">Full Name</label>
+							<input type="text" class="form-control" id="fullName" name = "fullName" value = "{{ name }}"placeholder="Enter full name">
+						</div>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label for="bio">Bio</label>
+							<input type="bio" class="form-control" name = "bio" id="bio" placeholder="About you..." maxlength = "300" value = "{{ bio }}">
+						</div>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label for="employed">School/Employed At</label>
+							<input type="text" class="form-control" id="employed" name = "employed" placeholder="Microsoft" value = "{{ employed }}">
+						</div>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label for="website">Website URL</label>
+							<input type="url" class="form-control" id="website" placeholder="Website url" value = "{{ site }}" name = "site">
+						</div>
+					</div>
+				</div>
+				<div class="row gutters">
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+						<h6 class="mb-3 text-primary">Account</h6>
+					</div>
+          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="email" class="form-control" id="email" placeholder="Email" value = "{{ email }}" name = "email">
+						</div>
+					</div>
+					<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+            <div class = "form-group">
+              <label for = "delete" class = "text text-danger">Delete Account</label><br>
+              <a href = "/delete_account" id = "delete" class = "btn btn-danger">Delete</a>
+            </div>
+					</div>
+				</div>
+
+				<div class="row gutters" style = "margin-top: 1em;">
+					<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+						<div class="text-right">
+							<a href = "/" type="button" id="submit"  class="btn btn-secondary">Cancel</a>
+							<button type="submit" id="submit"  class="btn btn-primary">Update</button>
+						</div>
+            
+					</div>
+        
+				</div>
+        
+			</div>
+      
+		</div>
+      </form>
+
+	</div>
+</div>
+
+</div>
+
+
+  <footer class="container">
+    {% include "./footer.html" %}
+  </footer>
+</main>
+</body>
+</html>

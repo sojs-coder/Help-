@@ -25,8 +25,7 @@
           location.reload();
         }
         Auth.ondone = function(e){
-          window.opener.location.reload(false);
-          window.close();
+          location.reload();
         }
         new Auth("iframe").append();
     </script> 

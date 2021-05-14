@@ -1,8 +1,8 @@
 <header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bgdark">
-			<div class="container-fluid headerdiv">
-				<a class="navbar-brand" href="/">Help!</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+	<nav class="navbar navbar-expand-md navbar-dark fixed-top bgdark">
+		<div class="container-fluid headerdiv">
+			<a class="navbar-brand" href="/">Help!</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -20,11 +20,17 @@
             <a href="/contact" class="nav-link">Contact Us</a>
           </li>
           {% if username %}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-          <li class = "nav-item">
-            <span class = "nav-link active">Logged in as: {{ username }}
+          <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @{{ username }}
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="/@{{ username }}">Profile</a></li>
+            <li><a class="dropdown-item" href="/@{{ username }}/settings">Settings</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+            <a href="/logout" class="nav-link">Logout</a>
           </li>
           {% else %}
           <li class="nav-item">
@@ -43,4 +49,5 @@
     </div>
   </nav>
 </header>
-<script src="../js/link_analyzer.js"></script>
+<script src="/js/link_analyzer.js"></script>
+<script src = "/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	{% include "./firebaseSDKs.html" %}
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link rel="stylesheet" href="/css/home.css">
+	<link rel="stylesheet" href="/css/dark-theme.css">
+  <link rel = "stylesheet" href = "/css/user.css"/>
+	
+	<title>Help! - {{ uusername }}</title>
+
+	<style>
+		.bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		}
+
+		@media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+{% include "./header.html" %}
+<main style = "margin: 20px;">
+  <!--
+    What we have to work with:
+    bio
+    uusername
+    link
+    employed
+    name
+    posts [array
+      <TITLE, LINK, SHORTDES, TAGS>
+      ]
+    postnumber
+  -->
+<div class="row py-5 px-4">
+    <div class="col-md-5 mx-auto">
+        <!-- Profile widget -->
+        <div class="bg-dark shadow rounded overflow-hidden">
+            <div class="px-4 pt-0 pb-4 cover">
+                <div class="media align-items-end profile-head">
+                    <div class="profile mr-3"><img src="{% if pic %}{{ pic }}{% else %}{% endif %}" alt="..." width="130" class="rounded mb-2 img-thumbnail bg-dark"></div>
+                    <div class="media-body mb-5 text-white">
+                        <h4 class="mt-0 mb-0">{{ name }}</h4>
+                        <p class="small mb-4"> <i class="fas fa-map-marker-alt mr-2"></i><a href = "{{ link }}">{{ link }}</a></p>
+                        {% if username == uusername %}
+                        <p class = "small"><a href = "/@{{ username }}/settings">Edit</a></p>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="bg-dark p-4 d-flex justify-content-end text-center">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">{{ postnumber }}</h5><small class="text-muted"> <i class="fas fa-image mr-1"></i>Pleas</small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">XXX</h5><small class="text-muted"> <i class="fas fa-user mr-1"></i>Joined (Soon)</small>
+                    </li>
+                    <li class="list-inline-item">
+                        <h5 class="font-weight-bold mb-0 d-block">XXX</h5><small class="text-muted"> <i class="fas fa-user mr-1"></i>Joiners (Soon)</small>
+                    </li>
+                </ul>
+            </div>
+            <div class="px-4 py-3">
+                <h5 class="mb-0">About</h5>
+                <div class="p-4 rounded shadow-sm bg-dark">
+                    <p class="font-italic mb-0">{{ bio }}</p>
+                    {% if employed %}<p class="font-italic mb-0">Company/School: <i>{{ employed }}</i></p>{% endif %}
+                </div>
+            </div>
+            <div class="py-4 px-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">Recent pleas</h5>
+                </div>
+                <div class="row">
+                    {% if posts %}
+                      {% for post in posts %}
+                      <div class = "post">
+                        <a href = "/plea/{{ post.key }}">
+                        <h3>{{ post.title }}</h3>
+                        <p>{{ post.shortDes }}</p>
+                        </a>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                    <p class = "lead">{{ uusername }} has not posted anything</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  <footer class="container">
+    {% include "./footer.html" %}
+  </footer>
+</main>
+</body>
+</html>

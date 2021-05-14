@@ -1,0 +1,71 @@
+<link rel = "stylesheet" href = "/css/comment.css"/>
+<form action = "/comment" method = "POST">
+{% if username %}
+<div class="comment-img">
+  <img src = "{{ pfp }}"/>
+  <a href="/@{{ username }}" class="comment-author">{{ username }}</a>
+</div>
+{% endif %}
+<textarea name = "comment"></textarea>
+{% if username %}
+<input type = "submit" value = "Comment" class = "btn btn-success">
+{% else %}
+<a href = "/login?goto=/plea/{{ id }}" class = "btn btn-warning">Log in to comment</a> 
+{% endif %}
+<input type = "hidden" name = "pleaID" value = "{{ id }}" />
+</form>
+<div class="comment-thread">
+    <!-- Comment 1 start -->
+   {% for comment in comments %}
+    <div class="comment" id="comment-1">
+        <div class="comment-heading">
+            <div class="comment-img">
+                <img src = "{{ comment.pfp }}"/>
+            </div>
+            <div class="comment-info">
+                <a href="/@{{ comment.author }}" class="comment-author">{{ comment.author }}</a>
+                <p class="m-0">
+                  {{ comment.timeFrom }}
+                </p>
+            </div>
+        </div>
+
+        <div class="comment-body">
+            <p>
+                {{ comment.comment }}
+            </p>
+            <button type="button" class = "reply-btn" data-cm-commentID = "{{ comment.key }}" data-cm-rauthor = "{{ comment.author }}" data-cm-plea = "{{ id }}">Reply</button>
+        </div>
+
+            <!-- Comment 2 start -->
+          {% for reply in comment.replies %}
+              <div class="comment reply" id="comment-1">
+                <div class="comment-heading">
+                    <div class="comment-img">
+                        <img src = "{{ reply.pfp }}"/>
+                    </div>
+                    <div class="comment-info">
+                        <a href="/@{{ reply.author }}" class="comment-author">{{ reply.author }}</a>
+                        <p class="m-0">
+                          {{ reply.timeFrom }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="comment-body">
+                    <p>
+                        {{ reply.comment }}
+                    </p>
+                </div>
+              </div>
+            {% endfor %}
+            <!-- Comment 2 end -->
+        </div>
+      {% endfor %}
+                    </div>
+
+    </div>
+
+    <!-- Comment 1 end -->
+</div>
+<script src = "/js/comment.js"></script>

@@ -1,0 +1,1 @@
+var URL = window.location;

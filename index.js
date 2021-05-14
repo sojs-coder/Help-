@@ -8,6 +8,7 @@ const upload = multer();
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto-js');
+var MD5 = require("crypto-js/md5");
 const http = require('http').createServer(app);
 var admin = require("firebase-admin");
 const crypto2 = require('./crypto.js');
@@ -25,11 +26,79 @@ serviceAccount = JSON.parse(serviceAccount);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://help-f52dd-default-rtdb.firebaseio.com"
+  databaseURL: "https://help-f52dd-default-rtdb.firebaseio.com",
+  storageBucket: "help-f52dd.appspot.com"
 });
 
 /* Helpers */
+function getIMG(email){
+  var emailtrim = email.trim();
+          var emailhash = MD5(emailtrim)
+          var full = "https://www.gravatar.com/avatar/"+emailhash+"?d=https%3A%2F%2Fhelp.sojs.dev%2Fimgs%2Fempty_pic.png";
+  return full
+}
+function getTimeFormat(now, timestamp){
+  var diference;
+  var diff = timeDifference(now,timestamp);
+  if(diff.years >= 3){
+          return diff.years + " years ago";
+  }else if(diff.years >= 1){
+          return diff.years + " years, " + diff.days+ " days ago";
+  }else if(diff.days >= 1){
+          return diff.days + " days, "+ diff.hours + " hours ago";
+  }else if(diff.hours >= 1){
+          return diff.hours + " hours, "+ diff.minutes+ " minutes ago";
+  }else if(diff.minutes >= 1){
+          return diff.minutes + " minutes, "+diff.seconds+ " seconds ago";
+  }else{
+          return diff.seconds + " seconds ago";
+  }
+}
+function timeDifference(date1, date2) {
+  var difference = date1 - date2;
+  var yearsDifference = Math.floor(difference / 1000 / 60 / 60 / 24 / 365);
+  difference -= yearsDifference * 1000 * 60 * 60 * 24 * 365
+  var daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
+  difference -= daysDifference * 1000 * 60 * 60 * 24
 
+  var hoursDifference = Math.floor(difference / 1000 / 60 / 60);
+  difference -= hoursDifference * 1000 * 60 * 60
+
+  var minutesDifference = Math.floor(difference / 1000 / 60);
+  difference -= minutesDifference * 1000 * 60
+
+  var secondsDifference = Math.floor(difference / 1000);
+
+
+
+  return {
+    days: daysDifference,
+    minutes: minutesDifference,
+    hours: hoursDifference,
+    seconds: secondsDifference,
+    years: yearsDifference
+  }
+}
+function getPosts(username,cb = ()=>{}){
+  ref.once('value',(snap)=>{
+    snap = snap.val();
+    var array = json2array(snap);
+    var posted = array.filter((d)=>{
+      return d.author == username;
+    }); 
+    posted = posted.map((d)=>{
+      d.shortDes = truncate(d.des, 100, true);
+      return d;
+    });
+    posted = posted.reverse();
+    var nums = posted.length;
+    
+    cb({
+      number: nums,
+      posted: posted,
+    })
+  })
+}
 function createNotification(target, notif) {
   users.once('value', (snap) => {
     var timestamp = new Date().getTime()
@@ -208,7 +277,7 @@ function notification(plea, req) {
 var db = admin.database();
 var ref = db.ref("pleas");
 var users = db.ref('users');
-
+// var bucket = admin.storage().bucket();
 
 /*======app.get();======*/
 
@@ -278,8 +347,10 @@ app.get('/new', (req, res) => {
           res.render('new', json)
         })
       } else {
-
-        res.redirect('/authenticate')
+        getLocals(req, (json) => {
+          res.render('new', json)
+        })
+        
       }
     } else {
 
@@ -328,12 +399,25 @@ app.get('/plea/:pleaID', (req, res) => {
     var plea = snapshot[pleaID];
     var userData, loggedIn, notOwner;
     if (plea) {
+      var comments = json2array(plea.comments || []);
+      comments = comments.map((d)=>{
+        d.timeFrom = getTimeFormat(new Date().getTime(), d.timestamp);
+        d.replies = json2array(d.replies || {});
+        d.replies = d.replies.map((d)=>{
+          d.timeFrom = getTimeFormat(new Date().getTime(),d.timestamp)
+          return d;
+        })
+        d.replies = d.replies.reverse();
+        return d;
+      });
+      comments = comments.reverse();
       if (req.session.signedIn) {
         users.once('value', (snap) => {
           snap = snap.val();
           userData = snap[req.session.username]
           alreadyJoined = (plea.users.indexOf(userData.username) !== -1) ? true : false;
-          notowner = (plea.author == userData.username) ? false : true
+          notowner = (plea.author == userData.username) ? false : true;
+          
           res.render('plea', {
             "author": plea.author,
             "title": plea.title,
@@ -343,7 +427,9 @@ app.get('/plea/:pleaID', (req, res) => {
             "tags": plea.tags,
             "owner": notowner,
             "username": req.session.username,
-            "joined": alreadyJoined
+            "joined": alreadyJoined,
+            "comments": comments,
+            "pfp": getIMG(userData.email)
           });
         })
       } else {
@@ -356,7 +442,8 @@ app.get('/plea/:pleaID', (req, res) => {
           "tags": plea.tags,
           "owner": true,
           "username": false,
-          "joined": false
+          "joined": false,
+          "comments":comments
         });
       }
 
@@ -548,8 +635,172 @@ app.get('/contact', (req, res) => {
   getLocals(req, (json) => {
     res.render('contact', json);
   })
-})
+});
+app.get('/@:user/settings',(req,res)=>{
+  var username = req.params['user'];
+  if(req.session.username){
+    if(req.session.username == username){
+      getLocals(req,(d)=>{
+        users.once('value',(snap)=>{
+          snap = snap.val();
+          var userdata = snap[req.session.username];
+          var bio = userdata.bio;
+          var siteLink = userdata.site;
+          var name = userdata.name;
+          var employed = userdata.employed;
+          var emailtrim = userdata.email.trim();
+          var emailhash = MD5(emailtrim)
+          var full = "https://www.gravatar.com/avatar/"+emailhash+"?d=https%3A%2F%2Fhelp.sojs.dev%2Fimgs%2Fempty_pic.png";
+          d.pic = full;
+          d.bio = bio;
+          d.site = siteLink;
+          d.name = name;
+          d.email = userdata.email;
+          d.employed = employed;
+          res.render('settings',d);
+        })
+      })
+    }else{
+      res.redirect('/')
+    }
+  }else{ 
+    res.redirect('/login');
+  }
+});
+app.get('/@:user',(req,res)=>{
+  getLocals(req,(d)=>{
+    var userChild = users.child(req.params['user']);
+    userChild.once('value',snap=>{
+      snap = snap.val();
+      if(snap){
+        getPosts(req.params['user'],(data)=>{
+          d.bio = snap.bio;
+          d.name = snap.name;
+          d.link = snap.site || snap.link;
+          d.employed = snap.employed;
+          d.posts = data.posted;
+          d.postnumber = data.number;
+          d.email = snap.email;
+          d.uusername = req.params['user']
+          var emailtrim = snap.email.trim();
+          var emailhash = MD5(emailtrim)
+          var full = "https://www.gravatar.com/avatar/"+emailhash+"?d=https%3A%2F%2Fhelp.sojs.dev%2Fimgs%2Fempty_pic.png";
+          d.pic = full;
+          res.render('user',d)
+        })
+      }else{
+      res.redirect('404?url=/@'+req.params['user']);
+      }
+    })
+  })
+});
+app.get('/delete_account',(req,res)=>{
+  if(req.session.username){
+    getLocals(req,(d)=>{
+      res.render('delete',d);
+    })
+  }else{
+    res.redirect('/login?goto=/delete_account');
+  }
+});
 /*=====app.post();========*/
+app.post('/reply',(req,res)=>{
+  var pleaID = req.body.pleaID;
+  if(req.session.username){
+    var rauthor = req.session.username;
+    var comment1 = req.body.comment1;
+    var commentID = req.body.commentID;
+    var pleaRef = ref.child(pleaID);
+    var comments = pleaRef.child('comments');
+    var commentRef = comments.child(commentID)
+    var replyRef = commentRef.child('replies');
+    userRef = users.child(req.session.username);
+    userRef.once('value',(snap)=>{
+      snap = snap.val();
+      var email = snap.email;
+      var img = getIMG(email);
+      replyRef.push({
+        comment: comment1,
+        timestamp: new Date().getTime(),
+        author: rauthor,
+        pfp: img
+      });
+      res.redirect('/plea/'+pleaID);
+    })
+  }else{
+    res.redirect('/login?goto=/plea/'+pleaID)
+  }
+})
+app.post('/comment',(req,res)=>{
+  var pleaID = req.body.pleaID;
+  console.log(pleaID)
+  if(req.session.username){
+    var comment = req.body.comment;
+    var author = req.session.username;
+    var replies = {};
+    var user = users.child(author);
+    user.once('value',(snap)=>{
+      snap = snap.val();
+      var emailtrim = snap.email.trim();
+          var emailhash = MD5(emailtrim)
+          var full = "https://www.gravatar.com/avatar/"+emailhash+"?d=https%3A%2F%2Fhelp.sojs.dev%2Fimgs%2Fempty_pic.png";
+      var json= {
+        comment: comment,
+        author: author,
+        replies: replies,
+        pfp: full,
+        timestamp: new Date().getTime()
+      };
+      var pleaRef = ref.child(pleaID);
+      commentRef = pleaRef.child('comments');
+      commentRef.push(json);
+      res.redirect('/plea/'+pleaID);
+    })
+  }else{
+    res.redirect('/login?goto=/plea/'+pleaID);
+  }
+  
+})
+app.post('/delete_account',(req,res)=>{
+  if(req.session.username){
+   
+    users.once('value',(snap)=>{
+      snap = snap.val();
+      usersnap = snap[req.session.username];
+      var password = crypto.SHA256(req.body.password).toString(crypto.enc.Hex);
+
+      if(usersnap.passwordHash == password){
+        var userref = users.child(req.session.username);
+        userref.remove();
+        res.redirect('/logout');
+      }else{
+        res.redirect('/delete_account?doesnotmatch=true');
+      }
+    })
+  }else{
+    res.redirect('/login?goto=/delete_account')
+  }
+})
+app.post('/@:user/settings',(req,res)=>{
+  if(req.session.username){
+    var bio = req.body.bio || "Not Set";
+    var name = req.body.fullName || "Not Set";
+    var site = req.body.site || "https://help.sojs.dev/@"+req.session.username;
+    var employed = req.body.employed || "Not Set";
+    var email = req.body.email;
+    var userNameRef = users.child(req.session.username);
+    userNameRef.update({
+      "bio":bio,
+      "name":name,
+      "site":site,
+      "employed":employed,
+      "email":email
+    });
+    res.redirect('/@'+req.session.username)
+  }else{
+    res.redirect('/login');
+  }
+})
 app.post('/join/:pleaID', (req, res) => {
   var userData;
   if (req.session.signedIn) {
@@ -594,7 +845,13 @@ app.post('/signup', (req, res) => {
           "buttonTitle": "Go!",
           "title": "Help On Github", "timestamp": timestamp
         }],
-        passwordHash: password, identified: false
+        passwordHash: password,
+        identified: false,
+        bio: "No Bio (Change in settings)",
+        name: "No Name Specified",
+        employed: "",
+        site: ""
+        
       }
 
       users.child(username).set(data);
@@ -653,7 +910,7 @@ app.post('/new', (req, res) => {
     des = filter.clean(des);
 
     var pleaRef = ref.push({
-      title: title, des: des, author: author, users: [author], username: req.session.username, link: link, tags: tags
+      title: title, des: des, author: author, users: [author], username: req.session.username, link: link, tags: tags,comments: {}
     });
     res.redirect('/plea/' + pleaRef.key);
   } else {

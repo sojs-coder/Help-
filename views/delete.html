@@ -8,10 +8,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel='stylesheet' href='./css/sign.css'>
-	<meta name="description" content="Login to Help to use help.">
+	<meta name="description" content="Delet your help account">
 	<meta name="author" content="SoJS">
 
-	<title>Help! - Log In</title>
+	<title>Help! - Delete Account</title>
 
 
 	<link href="/css/bootstrap.min.css" rel="stylesheet">
@@ -25,22 +25,10 @@
 
 
 	<div class="signup-form">
-		<form method="post" action="/login" class="form" id="form">
-			<h2>Log In</h2>
-			<p>Log In to start helping!</p>
+		<form method="post" action="/delete_account" class="form" id="form">
+			<h2>Delete Account</h2>
+			<p>This is irreversable. Your pleas will still exist, but not your profile. Are you sure?</p>
 			<hr>
-			<div class="form-group">
-				<div class="input-group">
-					<div class="input-group-prepend">
-						<span class="input-group-text">
-						<span class="fa fa-user"></span>
-            <input type="text" class="form-control" name="username" placeholder="Username" required="required" autofocus>   
-					</span> 
-                          
-				</div>
-				
-			</div>
-        </div>
 		<div class="form-group">
 			<div class="input-group">
 				<div class="input-group-prepend">
@@ -55,11 +43,11 @@
       </div>
 		<p id = "errorMessage">&nbsp</p>
 		<div class="form-group">
-            <button type="submit" class="btn btn-primary btn-lg">Log In</button>
+            <button type="submit" class="btn btn-danger btn-lg">I'm Sure</button>
         </div>
         
     </form>
-	<div class="text-center">Don't have an account? <a href="/signup">Sign Up here</a></div>
+	<div class="text-center"></div>
 </div>
   
 
